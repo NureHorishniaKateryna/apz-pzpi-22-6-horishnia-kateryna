@@ -1,1 +1,1 @@
-# apz-pzpi-22-6-horishnia-kateryna
+# apz-pzpi-22-6-horishnia-kateryna  ПЗПІ-22-6  Горішня Катерина  Тема доповіді ПЗ1  Тема доповіді ПЗ2  Тема проєкту на усі ЛР  
