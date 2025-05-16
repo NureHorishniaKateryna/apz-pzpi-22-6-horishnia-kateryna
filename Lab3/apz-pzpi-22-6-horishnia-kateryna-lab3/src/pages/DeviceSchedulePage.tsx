@@ -1,28 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
-import {
-    Container,
-    Title,
-    Group,
-    Button,
-    Card,
-    Divider, Modal, Stack,
-} from '@mantine/core';
+import React, {useEffect, useState} from 'react';
+import {useParams} from 'react-router';
+import {Button, Card, Container, Divider, Group, Modal, Stack, Title,} from '@mantine/core';
 import {TimeInput} from "@mantine/dates";
-import { useDisclosure } from "@mantine/hooks";
-import type {ScheduleItem} from "../types.ts";
-
-const generateFakeSchedules = (count: number): ScheduleItem[] => {
-    return Array.from({ length: count }, () => {
-        const start = Math.floor(Math.random()*(86400 - 60 * 60));
-        const end = start + Math.floor(Math.random() * 60 * 60);
-        return {
-            id: (Date.now() % 86400_000) * 1000 + Math.floor(Math.random() * 1000_000),
-            start: start,
-            end: end,
-        };
-    });
-};
+import {useDisclosure} from "@mantine/hooks";
+import {useDispatch, useSelector} from "react-redux";
+import type {AppDispatch, RootState} from "../store.ts";
+import {createSchedule, deleteSchedule, fetchDeviceSchedule} from "../reducers/device_schedule_reducer.ts";
+import {unwrapResult} from "@reduxjs/toolkit";
 
 const toHHmm = (time: number) => {
     const hours = Math.floor(time / 3600);
@@ -37,28 +21,36 @@ const fromHHmm = (time: string) => {
 
 const DeviceSchedulePage: React.FC = () => {
     const { deviceId } = useParams();
-    const [schedules, setSchedules] = useState<ScheduleItem[]>([]);
+    const dispatch = useDispatch<AppDispatch>();
+    const schedules = useSelector((state: RootState) => state.schedule.list);
     const [modalOpened, { open, close }] = useDisclosure(false);
     const [newStartTime, setNewStartTime] = useState("12:34");
     const [newEndTime, setNewEndTime] = useState("23:45");
 
     useEffect(() => {
-        const fakeSchedules = generateFakeSchedules(3);
-        setSchedules(fakeSchedules);
+        dispatch(fetchDeviceSchedule(Number(deviceId)));
     }, [deviceId]);
 
     const handleAdd = () => {
-        const newItem: ScheduleItem = {
-            id: (Date.now() % 86400_000) * 1000 + Math.floor(Math.random() * 1000_000),
+        dispatch(createSchedule({
+            deviceId: Number(deviceId),
             start: fromHHmm(newStartTime),
             end: fromHHmm(newEndTime),
-        };
-        setSchedules((prev) => [...prev, newItem]);
-        close()
+        }))
+            .then(unwrapResult)
+            .then(result => {
+                if (!result.result) return;
+                close();
+            });
     };
 
     const handleDelete = (id: number) => {
-        setSchedules((prev) => prev.filter((item) => item.id !== id));
+        dispatch(deleteSchedule({deviceId: Number(deviceId), scheduleId: id}))
+            .then(unwrapResult)
+            .then(result => {
+                if(!result.result) return;
+                dispatch(fetchDeviceSchedule(Number(deviceId)));
+            });
     };
 
     return (
