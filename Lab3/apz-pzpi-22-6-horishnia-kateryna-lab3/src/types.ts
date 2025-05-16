@@ -12,6 +12,10 @@ export type Device = {
     configuration: DeviceConfig;
 };
 
+export type AdminDevice = Device & {
+    user: User;
+}
+
 export type ScheduleItem = {
     id: number;
     start: number;

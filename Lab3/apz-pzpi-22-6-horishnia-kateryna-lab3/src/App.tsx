@@ -5,11 +5,12 @@ import DeviceSchedulePage from "./pages/DeviceSchedulePage.tsx";
 import DeviceAnalyticsPage from "./pages/DeviceAnalyticsPage.tsx";
 import AdminUsersPage from "./pages/AdminUsersPage.tsx";
 import AdminUserDetailPage from "./pages/AdminUserDetailPage.tsx";
+import AdminDevicesPage from "./pages/AdminDevicesPage.tsx";
+import AdminDeviceDetailPage from "./pages/AdminDeviceDetailPage.tsx";
 
 function App() {
     const default_route = <Navigate to="/devices" replace/>;
 
-    // TODO: admin devices page
     // TODO: admin reports page
     return (
         <BrowserRouter>
@@ -22,6 +23,8 @@ function App() {
                 <Route path="/devices/:deviceId/analytics" element={<DeviceAnalyticsPage/>}/>
                 <Route path="/admin/users" element={<AdminUsersPage/>}/>
                 <Route path="/admin/users/:userId" element={<AdminUserDetailPage/>}/>
+                <Route path="/admin/devices" element={<AdminDevicesPage/>}/>
+                <Route path="/admin/devices/:deviceId" element={<AdminDeviceDetailPage/>}/>
             </Routes>
         </BrowserRouter>
     )
