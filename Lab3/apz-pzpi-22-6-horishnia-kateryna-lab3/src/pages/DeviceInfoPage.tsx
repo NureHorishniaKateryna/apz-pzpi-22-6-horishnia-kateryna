@@ -14,6 +14,10 @@ import {
 import type {Device} from "../types.ts";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {useDisclosure} from "@mantine/hooks";
+import {deleteDevice, editDevice, fetchDevice} from "../reducers/device_reducer.ts";
+import {unwrapResult} from "@reduxjs/toolkit";
+import {useDispatch} from "react-redux";
+import type {AppDispatch} from "../store.ts";
 
 type Report = {
     id: string;
@@ -34,6 +38,7 @@ const generateFakeReports = (count: number, offset: number): Report[] => {
 const DeviceDetailPage = () => {
     const { deviceId } = useParams();
     const navigate = useNavigate();
+    const dispatch = useDispatch<AppDispatch>();
 
     const [name, setName] = useState("");
     const [electricityPrice, setElectricityPrice] = useState(0);
@@ -47,30 +52,35 @@ const DeviceDetailPage = () => {
 
     const [loading, { open: setLoading, close: setNotLoading }] = useDisclosure(false);
 
-    useEffect(() => {
-        const fakeDevice: Device = {
-            id: Number(deviceId!),
-            name: `Device ${deviceId}`,
-            api_key: "1234-ABCD-5678-EFGH",
-            configuration: {
-                device_id: Number(deviceId!),
-                electricity_price: Math.random() * 10,
-                enabled_auto: true,
-                enabled_manually: false,
-            }
-        };
-        setName(fakeDevice.name);
-        setElectricityPrice(fakeDevice.configuration.electricity_price);
-        setEnabledAutomatically(fakeDevice.configuration.enabled_auto);
-        setEnabledManually(fakeDevice.configuration.enabled_manually);
-        setApiKey(fakeDevice.api_key);
+    const setDeviceInfo = (device: Device) => {
+        setName(device.name);
+        setElectricityPrice(device.configuration.electricity_price);
+        setEnabledAutomatically(device.configuration.enabled_auto);
+        setEnabledManually(device.configuration.enabled_manually);
+        setApiKey(device.api_key);
+    }
 
-        const initialReports = generateFakeReports(20, 0);
-        setReports(initialReports);
-        setReportOffset(20);
+    useEffect(() => {
+        setLoading();
+        dispatch(fetchDevice(Number(deviceId)))
+            .then(unwrapResult)
+            .then(result_ => {
+                setNotLoading();
+                const {result} = result_;
+                if(result === null)
+                    return;
+
+                setDeviceInfo(result);
+
+                // TODO: fetch real
+                const initialReports = generateFakeReports(20, 0);
+                setReports(initialReports);
+                setReportOffset(20);
+            });
     }, [deviceId]);
 
     const loadMoreReports = () => {
+        // TODO: fetch real
         const newReports = generateFakeReports(10, reportOffset);
         if (newReports.length === 0) {
             setHasMoreReports(false);
@@ -85,26 +95,38 @@ const DeviceDetailPage = () => {
     };
 
     const handleSave = async () => {
-        console.log({
-            id: deviceId,
+        setLoading();
+
+        dispatch(editDevice({
+            id: Number(deviceId),
             name: name,
             electricity_price: electricityPrice,
             enabled_auto: enabledAutomatically,
             enabled_manually: enabledManually,
-        });
+        }))
+            .then(unwrapResult)
+            .then(result_ => {
+                setNotLoading();
+                const {result} = result_;
+                if(result === null)
+                    return;
 
-        setLoading();
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setNotLoading();
+                setDeviceInfo(result);
+            });
     };
 
     const handleDelete = async () => {
-        console.log(deviceId);
-
         setLoading();
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setNotLoading();
-        navigate("/devices");
+
+        dispatch(deleteDevice(Number(deviceId)))
+            .then(unwrapResult)
+            .then(result_ => {
+                setNotLoading();
+                const {result} = result_;
+                if(result)
+                    navigate("/devices");
+            });
+
     };
 
     const handleGoToSchedule = () => {
