@@ -9,6 +9,7 @@ import bcrypt
 import jwt
 from flask_mqtt import Mqtt
 from flask_openapi3 import OpenAPI
+from flask_cors import CORS
 from sqlalchemy import create_engine, extract
 from sqlalchemy.orm import sessionmaker
 
@@ -29,6 +30,7 @@ app.config["MQTT_KEEPALIVE"] = 60
 app.config["MQTT_TLS_ENABLED"] = True
 app.config["MQTT_TLS_INSECURE"] = False
 app.config["MQTT_TLS_VERSION"] = ssl.PROTOCOL_TLSv1_2
+CORS(app)
 
 mqtt = Mqtt(app)
 
@@ -155,6 +157,12 @@ def login(body: LoginRequest):
             "exp": int(time() + JWT_EXPIRE_TIME)
         }, JWT_KEY, algorithm="HS256")
     }
+
+
+@app.get("/api/user")
+def get_user(header: AuthHeaders):
+    user = auth_user(header.token)
+    return user.to_json()
 
 
 @app.get("/api/devices")
