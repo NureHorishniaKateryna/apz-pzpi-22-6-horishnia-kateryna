@@ -7,11 +7,12 @@ import AdminUsersPage from "./pages/AdminUsersPage.tsx";
 import AdminUserDetailPage from "./pages/AdminUserDetailPage.tsx";
 import AdminDevicesPage from "./pages/AdminDevicesPage.tsx";
 import AdminDeviceDetailPage from "./pages/AdminDeviceDetailPage.tsx";
+import LoginPage from "./pages/LoginPage.tsx";
+import RegisterPage from "./pages/RegisterPage.tsx";
 
 function App() {
-    const default_route = <Navigate to="/devices" replace/>;
+    const default_route = <Navigate to="/login" replace/>;
 
-    // TODO: admin reports page
     return (
         <BrowserRouter>
             <Routes>
@@ -25,6 +26,8 @@ function App() {
                 <Route path="/admin/users/:userId" element={<AdminUserDetailPage/>}/>
                 <Route path="/admin/devices" element={<AdminDevicesPage/>}/>
                 <Route path="/admin/devices/:deviceId" element={<AdminDeviceDetailPage/>}/>
+                <Route path="/login" element={<LoginPage/>}/>
+                <Route path="/register" element={<RegisterPage/>}/>
             </Routes>
         </BrowserRouter>
     )
