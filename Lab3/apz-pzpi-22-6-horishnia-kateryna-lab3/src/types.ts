@@ -17,3 +17,11 @@ export type ScheduleItem = {
     start: number;
     end: number;
 };
+
+export type DeviceAnalytics = {
+    enable_count: number;
+    total_enabled_time: number;
+    average_enabled_time: number;
+    electricity_consumption: number;
+    electricity_price: number;
+};
