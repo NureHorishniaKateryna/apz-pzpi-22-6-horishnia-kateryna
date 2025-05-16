@@ -11,3 +11,9 @@ export type Device = {
     api_key: string;
     configuration: DeviceConfig;
 };
+
+export type ScheduleItem = {
+    id: number;
+    start: number;
+    end: number;
+};

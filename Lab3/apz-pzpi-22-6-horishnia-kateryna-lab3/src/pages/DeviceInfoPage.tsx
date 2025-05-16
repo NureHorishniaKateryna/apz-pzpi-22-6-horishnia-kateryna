@@ -100,6 +100,7 @@ const DeviceDetailPage = () => {
         navigate(`/devices/${deviceId}/schedule`);
     };
 
+    // TODO: add LoadingOverlay on save
     return (
         <Container size="sm" py="md">
             <Title order={2} mb="md">Device Info</Title>
