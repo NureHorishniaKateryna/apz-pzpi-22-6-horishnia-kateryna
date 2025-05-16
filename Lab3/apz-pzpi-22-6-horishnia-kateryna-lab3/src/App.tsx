@@ -9,6 +9,7 @@ import AdminDevicesPage from "./pages/AdminDevicesPage.tsx";
 import AdminDeviceDetailPage from "./pages/AdminDeviceDetailPage.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
 import RegisterPage from "./pages/RegisterPage.tsx";
+import AppLayout from "./pages/AppLayout.tsx";
 
 function App() {
     const default_route = <Navigate to="/login" replace/>;
@@ -16,16 +17,27 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="*" element={default_route}/>
                 <Route index path="/" element={default_route}/>
-                <Route path="/devices" element={<DevicesPage/>}/>
-                <Route path="/devices/:deviceId" element={<DeviceDetailPage/>}/>
-                <Route path="/devices/:deviceId/schedule" element={<DeviceSchedulePage/>}/>
-                <Route path="/devices/:deviceId/analytics" element={<DeviceAnalyticsPage/>}/>
-                <Route path="/admin/users" element={<AdminUsersPage/>}/>
-                <Route path="/admin/users/:userId" element={<AdminUserDetailPage/>}/>
-                <Route path="/admin/devices" element={<AdminDevicesPage/>}/>
-                <Route path="/admin/devices/:deviceId" element={<AdminDeviceDetailPage/>}/>
+                <Route
+                    path="*"
+                    element={
+                        <AppLayout>
+                            <Routes>
+                                <Route path="*" element={default_route}/>
+
+                                <Route path="/devices" element={<DevicesPage/>}/>
+                                <Route path="/devices/:deviceId" element={<DeviceDetailPage/>}/>
+                                <Route path="/devices/:deviceId/schedule" element={<DeviceSchedulePage/>}/>
+                                <Route path="/devices/:deviceId/analytics" element={<DeviceAnalyticsPage/>}/>
+                                <Route path="/admin/users" element={<AdminUsersPage/>}/>
+                                <Route path="/admin/users/:userId" element={<AdminUserDetailPage/>}/>
+                                <Route path="/admin/devices" element={<AdminDevicesPage/>}/>
+                                <Route path="/admin/devices/:deviceId" element={<AdminDeviceDetailPage/>}/>
+
+                            </Routes>
+                        </AppLayout>
+                    }
+                />
                 <Route path="/login" element={<LoginPage/>}/>
                 <Route path="/register" element={<RegisterPage/>}/>
             </Routes>

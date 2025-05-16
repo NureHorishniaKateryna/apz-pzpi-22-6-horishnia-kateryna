@@ -11,11 +11,16 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { Dialog } from "@mantine/core";
 import {Link, useNavigate} from "react-router";
+import {useDispatch} from "react-redux";
+import type {AppDispatch} from "../store.ts";
+import {login, type AuthError, fetchUser} from "../reducers/auth_reducer.ts";
+import {unwrapResult} from "@reduxjs/toolkit";
 
 const LoginPage: React.FC = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [dialogMessage, setDialogMessage] = useState('');
+    const dispatch = useDispatch<AppDispatch>();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [dialogMessage, setDialogMessage] = useState("");
     const [opened, { open, close }] = useDisclosure(false);
     const navigate = useNavigate();
 
@@ -24,13 +29,27 @@ const LoginPage: React.FC = () => {
         open();
     };
 
-    const login = () => {
-        if (!email || !password) {
-            showDialog('Email and password are required.');
-            return;
-        }
-        console.log({ email, password });
-        navigate("/devices");
+    const onLogin = () => {
+        if (!email || !password) return showDialog("Email and password are required.");
+
+        dispatch(login({email: email, password: password}))
+            .then(unwrapResult)
+            .then(result => {
+                const {status, json} = result;
+                if(status >= 500)
+                    return showDialog("Server error.");
+                if(status >= 400)
+                    return showDialog((json as AuthError).error);
+
+                dispatch(fetchUser())
+                    .then(unwrapResult)
+                    .then(result => {
+                        const {success, error} = result;
+                        if(!success)
+                            return showDialog(error!);
+                        navigate("/devices");
+                    });
+            });
     };
 
     return (
@@ -51,7 +70,7 @@ const LoginPage: React.FC = () => {
                     value={password}
                     onChange={(e) => setPassword(e.currentTarget.value)}
                 />
-                <Button onClick={login}>Login</Button>
+                <Button onClick={onLogin}>Login</Button>
                 <Text size="sm" mt="sm">
                     Don’t have an account?{" "}
                     <Anchor component={Link} to="/register">

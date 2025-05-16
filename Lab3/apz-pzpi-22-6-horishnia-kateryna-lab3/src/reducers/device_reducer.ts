@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type {Device} from "../types.ts";
 
 type DevicesSliceState = {
@@ -8,7 +8,7 @@ type DevicesSliceState = {
 }
 
 export const fetchDevices = createAsyncThunk(
-    'devices/fetchDevices',
+    "devices/fetchDevices",
     async (page: number) => {
         // TODO: fetch via api
         const fakeDevices: Device[] = Array.from({ length: 25 }, (_, i) => ({
@@ -28,7 +28,7 @@ export const fetchDevices = createAsyncThunk(
 );
 
 const devicesSlice = createSlice({
-    name: 'devices',
+    name: "devices",
     initialState: {
         list: [] as Device[],
         page: 1,

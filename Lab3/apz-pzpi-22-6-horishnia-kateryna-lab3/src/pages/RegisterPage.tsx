@@ -10,8 +10,13 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import {Link, useNavigate} from "react-router";
+import {type AuthError, fetchUser, register} from "../reducers/auth_reducer.ts";
+import {unwrapResult} from "@reduxjs/toolkit";
+import {useDispatch} from "react-redux";
+import type {AppDispatch} from "../store.ts";
 
 const RegisterPage: React.FC = () => {
+    const dispatch = useDispatch<AppDispatch>();
     const [email, setEmail] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -26,24 +31,30 @@ const RegisterPage: React.FC = () => {
         open();
     };
 
-    const register = () => {
-        if (!email || !password || !repeatPassword || !firstName || !lastName) {
-            showDialog("All fields are required.");
-            return;
-        }
-        if (password !== repeatPassword) {
-            showDialog("Passwords do not match.");
-            return;
-        }
+    const onRegister = () => {
+        if (!email || !password || !repeatPassword || !firstName || !lastName)
+            return showDialog("All fields are required.");
+        if (password !== repeatPassword)
+            return showDialog("Passwords do not match.");
 
-        console.log({
-            email,
-            password,
-            first_name: firstName,
-            last_name: lastName,
-        });
+        dispatch(register({email: email, password: password, first_name: firstName, last_name: lastName}))
+            .then(unwrapResult)
+            .then(result => {
+                const {status, json} = result;
+                if(status >= 500)
+                    return showDialog("Server error.");
+                if(status >= 400)
+                    return showDialog((json as AuthError).error);
 
-        navigate("/devices");
+                dispatch(fetchUser())
+                    .then(unwrapResult)
+                    .then(result => {
+                        const {success, error} = result;
+                        if(!success)
+                            return showDialog(error!);
+                        navigate("/devices");
+                    });
+            });
     };
 
     return (
@@ -79,7 +90,7 @@ const RegisterPage: React.FC = () => {
                     value={repeatPassword}
                     onChange={(e) => setRepeatPassword(e.currentTarget.value)}
                 />
-                <Button onClick={register}>Register</Button>
+                <Button onClick={onRegister}>Register</Button>
                 <Text size="sm" mt="sm">
                     Already have an account?{" "}
                     <Anchor component={Link} to="/login">
