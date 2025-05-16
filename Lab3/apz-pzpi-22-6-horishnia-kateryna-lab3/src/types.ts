@@ -25,3 +25,11 @@ export type DeviceAnalytics = {
     electricity_consumption: number;
     electricity_price: number;
 };
+
+export type User = {
+    id: number;
+    email: string;
+    first_name: string;
+    last_name: string;
+    is_admin: boolean;
+};

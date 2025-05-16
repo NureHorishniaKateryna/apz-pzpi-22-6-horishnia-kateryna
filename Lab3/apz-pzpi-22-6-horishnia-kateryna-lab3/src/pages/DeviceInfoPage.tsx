@@ -9,10 +9,11 @@ import {
     Title,
     Text,
     Space,
-    NumberInput, Divider, Card,
+    NumberInput, Divider, Card, LoadingOverlay,
 } from "@mantine/core";
 import type {Device} from "../types.ts";
 import InfiniteScroll from "react-infinite-scroll-component";
+import {useDisclosure} from "@mantine/hooks";
 
 type Report = {
     id: string;
@@ -43,6 +44,8 @@ const DeviceDetailPage = () => {
     const [reports, setReports] = useState<Report[]>([]);
     const [hasMoreReports, setHasMoreReports] = useState(true);
     const [reportOffset, setReportOffset] = useState(0);
+
+    const [loading, { open: setLoading, close: setNotLoading }] = useDisclosure(false);
 
     useEffect(() => {
         const fakeDevice: Device = {
@@ -81,18 +84,26 @@ const DeviceDetailPage = () => {
         setEnabledManually((prev) => !prev);
     };
 
-    const handleSave = () => {
-        console.log("Saving device", {
+    const handleSave = async () => {
+        console.log({
             id: deviceId,
-            name,
-            electricityPrice,
-            enabledAutomatically,
-            enabledManually,
+            name: name,
+            electricity_price: electricityPrice,
+            enabled_auto: enabledAutomatically,
+            enabled_manually: enabledManually,
         });
+
+        setLoading();
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        setNotLoading();
     };
 
-    const handleDelete = () => {
-        console.log("Deleting device", deviceId);
+    const handleDelete = async () => {
+        console.log(deviceId);
+
+        setLoading();
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        setNotLoading();
         navigate("/devices");
     };
 
@@ -100,9 +111,10 @@ const DeviceDetailPage = () => {
         navigate(`/devices/${deviceId}/schedule`);
     };
 
-    // TODO: add LoadingOverlay on save
     return (
         <Container size="sm" py="md">
+            <LoadingOverlay visible={loading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
+
             <Title order={2} mb="md">Device Info</Title>
 
             <TextInput
