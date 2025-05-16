@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type {Device} from "../types.ts";
+import type {RootState} from "../store.ts";
 
 type DevicesSliceState = {
     list: Device[];
@@ -7,23 +8,60 @@ type DevicesSliceState = {
     hasMore: boolean;
 }
 
+export type DeviceRetList = {
+    count: number;
+    result: Device[];
+}
+
+export type CreateDeviceParams = {
+    name: string;
+    electricity_price: number;
+};
+
+export type CreateDeviceRet = {
+    error: string | null;
+    result: Device | null;
+}
+
 export const fetchDevices = createAsyncThunk(
     "devices/fetchDevices",
-    async (page: number) => {
-        // TODO: fetch via api
-        const fakeDevices: Device[] = Array.from({ length: 25 }, (_, i) => ({
-            id: page * 25 + i,
-            name: `Device ${page * 25 + i}`,
-            api_key: "test-key",
-            configuration: {
-                device_id:  page * 25 + i,
-                enabled_manually: Math.random() > 0.5,
-                enabled_auto: Math.random() > 0.5,
-                electricity_price: Math.random() * 10,
-            },
-        }));
+    async (page: number, {getState}): Promise<DeviceRetList> => {
+        const token = (getState() as RootState).auth.token;
+        if(token === null) return {count: 0, result: []};
 
-        return fakeDevices;
+        const resp = await fetch(`http://127.0.0.1:9090/api/devices?page=${page}&page_size=50`, {
+            headers: {"Token": token},
+        });
+        if(resp.status >= 500)
+            return {count: 0, result: []};
+
+        const json = await resp.json();
+        if(resp.status >= 400)
+            return {count: 0, result: []};
+
+        return json;
+    }
+);
+
+export const createDevice = createAsyncThunk(
+    "devices/createDevice",
+    async (params: CreateDeviceParams, {getState}): Promise<CreateDeviceRet> => {
+        const token = (getState() as RootState).auth.token;
+        if(token === null) return {error: "Unauthenticated", result: null};
+
+        const resp = await fetch(`http://127.0.0.1:9090/api/devices`, {
+            method: "POST",
+            headers: {"Token": token, "Content-Type": "application/json"},
+            body: JSON.stringify(params),
+        });
+        if(resp.status >= 500)
+            return {error: "Server error", result: null};
+
+        const json = await resp.json();
+        if(resp.status >= 400)
+            return {error: json.error, result: null};
+
+        return {error: null, result: json};
     }
 );
 
@@ -43,12 +81,16 @@ const devicesSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(fetchDevices.fulfilled, (state, action) => {
-            if (action.payload.length === 0) {
+            if ((state.list.length + action.payload.result.length) >= action.payload.count) {
                 state.hasMore = false;
-            } else {
-                state.list.push(...action.payload);
-                state.page += 1;
             }
+
+            state.list.push(...action.payload.result);
+            state.page += 1;
+        });
+        builder.addCase(createDevice.fulfilled, (state, action) => {
+            if(action.payload.result === null) return;
+            state.list = [action.payload.result, ...state.list];
         });
     },
 });

@@ -1,6 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import type {User} from "../types.ts";
-import type {AppDispatch, RootState} from "../store.ts";
+import type {RootState} from "../store.ts";
 
 type AuthSliceState = {
     token: string | null;
@@ -74,7 +74,7 @@ export const register = createAsyncThunk(
 
 export const fetchUser = createAsyncThunk(
     "auth/fetchUser",
-    async (_: never, {getState}): Promise<FetchUserRet> => {
+    async (_, {getState}): Promise<FetchUserRet> => {
         const token = (getState() as RootState).auth.token;
         if(token === null) return {success: false, user: null, error: "Unauthorized"};
 
@@ -96,32 +96,39 @@ export const fetchUser = createAsyncThunk(
     }
 );
 
+const _user = localStorage.getItem("apz-user");
+
 const authSlice = createSlice({
     name: "auth",
     initialState: {
-        token: null,
-        user: null,
+        token: localStorage.getItem("apz-token"),
+        user: _user ? JSON.parse(_user) : null,
     } as AuthSliceState,
     reducers: {
         logout: (state) => {
             state.token = null;
             state.user = null;
+            localStorage.removeItem("apz-token");
+            localStorage.removeItem("apz-user");
         },
     },
     extraReducers: (builder) => {
         builder.addCase(login.fulfilled, (state, action) => {
             if(action.payload.status === 200 && "token" in (action.payload.json || {})) {
                 state.token = (action.payload.json! as AuthSuccess).token;
+                localStorage.setItem("apz-token", state.token);
             }
         });
         builder.addCase(register.fulfilled, (state, action) => {
             if(action.payload.status === 200 && "token" in (action.payload.json || {})) {
                 state.token = (action.payload.json! as AuthSuccess).token;
+                localStorage.setItem("apz-token", state.token);
             }
         });
         builder.addCase(fetchUser.fulfilled, (state, action) => {
-            if(action.payload.success === 200 && action.payload.user !== null) {
+            if(action.payload.success && action.payload.user !== null) {
                 state.user = action.payload.user!;
+                localStorage.setItem("apz-user", JSON.stringify(state.user));
             }
         });
     },
