@@ -1,31 +1,21 @@
 import {useEffect, useState} from 'react';
 import {Badge, Button, Container, Group, Pagination, Table, Title,} from '@mantine/core';
 import {useNavigate} from 'react-router';
-import type {User} from "../types.ts";
+import {useDispatch, useSelector} from "react-redux";
+import type {RootState} from "../store.ts";
+import {fetchUsers} from "../reducers/admin_users_reducer.ts";
 
-
-const generateFakeUsers = (count: number): User[] => {
-    return Array.from({ length: count }, (_, i) => ({
-        id: i,
-        email: `user${i + 1}@example.com`,
-        first_name: `First ${i}`,
-        last_name: `Last ${i}`,
-        is_admin: Math.random() < 0.1,
-    }));
-};
-
-const PAGE_SIZE = 10;
 
 const AdminUsersPage = () => {
-    const [users, setUsers] = useState<User[]>([]);
+    const dispatch = useDispatch();
+    const users = useSelector((state: RootState) => state.admin_users.list);
+    const pagesCount = useSelector((state: RootState) => state.admin_users.pages);
     const [page, setPage] = useState(1);
     const navigate = useNavigate();
 
     useEffect(() => {
-        setUsers(generateFakeUsers(550));
-    }, []);
-
-    const paginatedUsers = users.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+        dispatch(fetchUsers(page));
+    }, [page]);
 
     return (
         <Container size="lg" py="md">
@@ -42,7 +32,7 @@ const AdminUsersPage = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {paginatedUsers.map((user) => (
+                {users.map((user) => (
                     <tr key={user.id}>
                         <td>{user.id}</td>
                         <td>{user.email}</td>
@@ -75,7 +65,7 @@ const AdminUsersPage = () => {
                 <Pagination
                     value={page}
                     onChange={setPage}
-                    total={Math.ceil(users.length / PAGE_SIZE)}
+                    total={pagesCount}
                     mt="md"
                 />
             </div>

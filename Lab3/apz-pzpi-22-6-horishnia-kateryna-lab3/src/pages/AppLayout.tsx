@@ -28,10 +28,13 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 
     const links = [
         { label: "Devices", to: "/devices" },
-        // TODO: only show admin pages if user is admin
-        { label: "Admin Users", to: "/admin/users" },
-        { label: "Admin Devices", to: "/admin/devices" },
     ];
+    if(user?.is_admin) {
+        links.push(
+            { label: "Admin Users", to: "/admin/users" },
+            { label: "Admin Devices", to: "/admin/devices" },
+        );
+    }
 
     const isActive = (to: string) => location.pathname.startsWith(to);
 
