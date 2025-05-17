@@ -1,55 +1,67 @@
-import { useEffect, useState } from 'react';
-import {
-    Container,
-    Title,
-    TextInput,
-    Switch,
-    Button,
-    Group,
-    Stack, LoadingOverlay,
-} from '@mantine/core';
+import {useEffect, useState} from 'react';
+import {Button, Container, Group, LoadingOverlay, Stack, Switch, TextInput, Title,} from '@mantine/core';
 import {useNavigate, useParams} from 'react-router';
-import type {User} from "../types.ts";
 import {useDisclosure} from "@mantine/hooks";
-
-const generateFakeUser = (id: number): User => ({
-    id,
-    email: `user${id}@example.com`,
-    first_name: `First${id}`,
-    last_name: `Last${id}`,
-    is_admin: Math.random() < 0.1,
-});
+import {useDispatch, useSelector} from "react-redux";
+import type {RootState} from "../store.ts";
+import {unwrapResult} from "@reduxjs/toolkit";
+import {deleteUser, editUser, fetchUser} from '../reducers/admin_users_reducer.ts';
+import type {User} from "../types.ts";
 
 const AdminUserDetailPage = () => {
     const { userId } = useParams();
-    const [user, setUser] = useState<User | null>(null);
+    const dispatch = useDispatch();
+    const user = useSelector((state: RootState) => state.admin_users.current);
+
+    const [userFirst, setUserFirst] = useState("");
+    const [userLast, setUserLast] = useState("");
+    const [userEmail, setUserEmail] = useState("");
+    const [userIsAdmin, setUserIsAdmin] = useState(false);
+
     const [loading, { open: setLoading, close: setNotLoading }] = useDisclosure(false);
     const navigate = useNavigate();
 
+    const setUserMaybe = (user: User | null) => {
+        setNotLoading();
+        if(user === null) return;
+
+        setUserFirst(user.first_name);
+        setUserLast(user.last_name);
+        setUserEmail(user.email);
+        setUserIsAdmin(user.is_admin);
+    }
+
     useEffect(() => {
         if (userId) {
-            setUser(generateFakeUser(Number(userId)));
+            setLoading();
+            dispatch(fetchUser(Number(userId)))
+                .then(unwrapResult)
+                .then(({result}) => setUserMaybe(result));
         }
     }, [userId]);
 
-    const handleSave = async () => {
+    const handleSave = () => {
         if (!user) return;
-        console.log(user);
 
         setLoading();
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setNotLoading();
-
+        dispatch(editUser({
+            userId: Number(userId),
+            firstName: userFirst,
+            lastName: userLast,
+            email: userEmail,
+            isAdmin: userIsAdmin,
+        }))
+            .then(unwrapResult)
+            .then(({result}) => setUserMaybe(result));
     };
 
-    const handleDelete = async () => {
+    const handleDelete = () => {
         if (!user) return;
-        console.log(user.id);
 
         setLoading();
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setNotLoading();
-        navigate("/admin/users");
+        dispatch(deleteUser(Number(userId)))
+            .then(unwrapResult)
+            .then(({result}) => result && navigate("/admin/users"));
     };
 
     if (!user) return null;
@@ -63,23 +75,23 @@ const AdminUserDetailPage = () => {
                 <TextInput label="User ID" value={user.id} disabled />
                 <TextInput
                     label="Email"
-                    value={user.email}
-                    onChange={(e) => setUser({ ...user, email: e.currentTarget.value })}
+                    value={userEmail}
+                    onChange={(e) => setUserEmail(e.currentTarget.value)}
                 />
                 <TextInput
                     label="First Name"
-                    value={user.first_name}
-                    onChange={(e) => setUser({ ...user, first_name: e.currentTarget.value })}
+                    value={userFirst}
+                    onChange={(e) => setUserFirst(e.currentTarget.value)}
                 />
                 <TextInput
                     label="Last Name"
-                    value={user.last_name}
-                    onChange={(e) => setUser({ ...user, last_name: e.currentTarget.value })}
+                    value={userLast}
+                    onChange={(e) => setUserLast(e.currentTarget.value)}
                 />
                 <Switch
                     label="Is Admin"
-                    checked={user.is_admin}
-                    onChange={(event) => setUser({ ...user, is_admin: event.currentTarget.checked })}
+                    checked={userIsAdmin}
+                    onChange={(event) => setUserIsAdmin(event.currentTarget.checked)}
                 />
                 <Group mt="md">
                     <Button onClick={handleSave}>Save</Button>
