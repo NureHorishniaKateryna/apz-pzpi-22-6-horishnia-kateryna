@@ -8,9 +8,12 @@ import {
     Group,
     Box, Burger, Divider, UnstyledButton, Avatar, Menu,
 } from "@mantine/core";
-import { Link, useLocation } from "react-router";
+import {Link, useLocation, useNavigate} from "react-router";
 import {useDisclosure} from "@mantine/hooks";
 import {IconLogout} from "@tabler/icons-react";
+import {useDispatch, useSelector} from "react-redux";
+import type {RootState} from "../store.ts";
+import {logout} from "../reducers/auth_reducer.ts";
 
 type AppLayoutProps = {
     children: ReactNode;
@@ -18,6 +21,9 @@ type AppLayoutProps = {
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     const location = useLocation();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const user = useSelector((state: RootState) => state.auth.user);
     const [opened, { toggle }] = useDisclosure();
 
     const links = [
@@ -70,7 +76,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                                     <Avatar radius="xl" />
                                     <Box>
                                         <Text size="sm" fw={500}>
-                                            {"TODO: user name"}
+                                            {user && `${user.first_name} ${user.last_name}`}
                                         </Text>
                                     </Box>
                                 </Group>
@@ -80,7 +86,10 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                             <Menu.Item
                                 leftSection={<IconLogout size={16} />}
                                 color="red"
-                                onClick={() => console.log("TODO: log out")}
+                                onClick={() => {
+                                    dispatch(logout());
+                                    navigate("/login");
+                                }}
                             >
                                 Logout
                             </Menu.Item>
