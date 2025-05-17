@@ -1,39 +1,27 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router";
+import {useEffect, useRef, useState} from "react";
+import {useNavigate, useParams} from "react-router";
 import {
-    TextInput,
-    Switch,
     Button,
-    Group,
+    Card,
     Container,
-    Title,
-    Text,
+    Divider,
+    Group,
+    LoadingOverlay,
+    NumberInput,
     Space,
-    NumberInput, Divider, Card, LoadingOverlay,
+    Switch,
+    Text,
+    TextInput,
+    Title,
 } from "@mantine/core";
 import type {Device} from "../types.ts";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {useDisclosure} from "@mantine/hooks";
 import {deleteDevice, editDevice, fetchDevice} from "../reducers/device_reducer.ts";
 import {unwrapResult} from "@reduxjs/toolkit";
-import {useDispatch} from "react-redux";
-import type {AppDispatch} from "../store.ts";
-
-type Report = {
-    id: string;
-    status: boolean;
-    time: number;
-};
-
-const generateFakeReports = (count: number, offset: number): Report[] => {
-    return Array.from({ length: count }, (_, i) => {
-        return {
-            id: `r-${offset + i}`,
-            status: Math.random() > 0.5,
-            time: Date.now() - (offset + i) * 60 * 1000,
-        };
-    });
-};
+import {useDispatch, useSelector} from "react-redux";
+import type {AppDispatch, RootState} from "../store.ts";
+import {fetchReports} from "../reducers/device_report_reducer.ts";
 
 const DeviceDetailPage = () => {
     const { deviceId } = useParams();
@@ -46,9 +34,10 @@ const DeviceDetailPage = () => {
     const [enabledManually, setEnabledManually] = useState(false);
     const [apiKey, setApiKey] = useState("");
 
-    const [reports, setReports] = useState<Report[]>([]);
-    const [hasMoreReports, setHasMoreReports] = useState(true);
-    const [reportOffset, setReportOffset] = useState(0);
+    const reportsPage = useSelector((state: RootState) => state.reports.page);
+    const hasMoreReports = useSelector((state: RootState) => state.reports.hasMore);
+    const reports = useSelector((state: RootState) => state.reports.list);
+    const reportsInitialized = useRef(false)
 
     const [loading, { open: setLoading, close: setNotLoading }] = useDisclosure(false);
 
@@ -72,23 +61,14 @@ const DeviceDetailPage = () => {
 
                 setDeviceInfo(result);
 
-                // TODO: fetch real
-                const initialReports = generateFakeReports(20, 0);
-                setReports(initialReports);
-                setReportOffset(20);
+                if (reports.length === 0 && !reportsInitialized.current) {
+                    reportsInitialized.current = true;
+                    dispatch(fetchReports({deviceId: Number(deviceId), page: 1}));
+                }
             });
     }, [deviceId]);
 
-    const loadMoreReports = () => {
-        // TODO: fetch real
-        const newReports = generateFakeReports(10, reportOffset);
-        if (newReports.length === 0) {
-            setHasMoreReports(false);
-        } else {
-            setReports((prev) => [...prev, ...newReports]);
-            setReportOffset((prev) => prev + newReports.length);
-        }
-    };
+    const loadMoreReports = () => dispatch(fetchReports({deviceId: Number(deviceId), page: reportsPage}));
 
     const handleToggleManual = () => {
         setEnabledManually((prev) => !prev);
@@ -201,9 +181,9 @@ const DeviceDetailPage = () => {
                 endMessage={<Text ta="center" c="dimmed" mt="md">No more reports</Text>}
             >
                 {reports.map((report) => (
-                    <Card key={report.id} shadow="xs" p="sm" radius="md" mb="sm" withBorder>
+                    <Card key={report.time} shadow="xs" p="sm" radius="md" mb="sm" withBorder>
                         <Group justify="space-between">
-                            <Text c={report.status ? "green" : "red"}>{report.status ? 'Turned On' : 'Turned Off'}</Text>
+                            <Text c={report.enabled ? "green" : "red"}>{report.enabled ? 'Turned On' : 'Turned Off'}</Text>
                             <Text size="sm" c="dimmed">{new Date(report.time).toLocaleString()}</Text>
                         </Group>
                     </Card>

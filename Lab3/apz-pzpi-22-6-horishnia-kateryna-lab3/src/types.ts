@@ -37,3 +37,9 @@ export type User = {
     last_name: string;
     is_admin: boolean;
 };
+
+export type DeviceReport = {
+    time: number;
+    enabled: boolean;
+    enabled_for: number;
+}
