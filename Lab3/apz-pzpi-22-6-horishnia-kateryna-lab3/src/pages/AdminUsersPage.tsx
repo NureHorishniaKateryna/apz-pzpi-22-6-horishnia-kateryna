@@ -2,12 +2,12 @@ import {useEffect, useState} from 'react';
 import {Badge, Button, Container, Group, Pagination, Table, Title,} from '@mantine/core';
 import {useNavigate} from 'react-router';
 import {useDispatch, useSelector} from "react-redux";
-import type {RootState} from "../store.ts";
+import type {AppDispatch, RootState} from "../store.ts";
 import {fetchUsers} from "../reducers/admin_users_reducer.ts";
 
 
 const AdminUsersPage = () => {
-    const dispatch = useDispatch();
+    const dispatch: AppDispatch = useDispatch();
     const users = useSelector((state: RootState) => state.admin_users.list);
     const pagesCount = useSelector((state: RootState) => state.admin_users.pages);
     const [page, setPage] = useState(1);

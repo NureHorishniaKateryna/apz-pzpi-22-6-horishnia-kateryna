@@ -1,102 +1,62 @@
-import { useEffect, useState } from "react";
-import {
-    Container,
-    Title,
-    TextInput,
-    Switch,
-    Button,
-    Group,
-    Stack, LoadingOverlay,
-} from "@mantine/core";
+import {useEffect, useState} from "react";
+import {Button, Container, Group, LoadingOverlay, Stack, Switch, TextInput, Title,} from "@mantine/core";
 import {useNavigate, useParams} from "react-router";
 import {useDisclosure} from "@mantine/hooks";
-
-export type User = {
-    id: number;
-    email: string;
-    first_name: string;
-    last_name: string;
-    is_admin: boolean;
-};
-
-export type DeviceConfig = {
-    device_id: number;
-    enabled_manually: boolean;
-    enabled_auto: boolean;
-    electricity_price: number;
-};
-
-export type Device = {
-    id: number;
-    name: string;
-    api_key: string;
-    configuration: DeviceConfig;
-};
+import type {Device, User} from "../types.ts";
+import type {AppDispatch, RootState} from "../store.ts";
+import {useDispatch, useSelector} from "react-redux";
+import {unwrapResult} from "@reduxjs/toolkit";
+import {deleteDevice, editDevice, fetchDevice} from "../reducers/admin_devices_reducer.ts";
 
 export type AdminDevice = Device & {
     user: User;
 };
 
-const generateFakeDevice = (id: number): AdminDevice => ({
-    id,
-    name: `Device ${id}`,
-    api_key: `api_key_${id}`,
-    configuration: {
-        device_id: id,
-        enabled_manually: Math.random() < 0.5,
-        enabled_auto: Math.random() < 0.5,
-        electricity_price: parseFloat((Math.random() * 0.5 + 0.1).toFixed(2)),
-    },
-    user: {
-        id,
-        email: `user${id}@example.com`,
-        first_name: `First${id}`,
-        last_name: `Last${id}`,
-        is_admin: Math.random() < 0.3,
-    },
-});
-
 const AdminDeviceDetailPage = () => {
     const { deviceId } = useParams();
-    const [device, setDevice] = useState<AdminDevice | null>(null);
+    const dispatch: AppDispatch = useDispatch();
+    const device = useSelector((state: RootState) => state.admin_devices.current) as (AdminDevice | null);
+
+    const [name, setName] = useState("");
+
     const [loading, { open: setLoading, close: setNotLoading }] = useDisclosure(false);
     const navigate = useNavigate();
 
+    const setDeviceMaybe = (device: AdminDevice | null) => {
+        setNotLoading();
+        if(device === null) return;
+
+        setName(device.name);
+    }
+
     useEffect(() => {
         if (deviceId) {
-            setDevice(generateFakeDevice(parseInt(deviceId)));
+            setLoading();
+            dispatch(fetchDevice(Number(deviceId)))
+                .then(unwrapResult)
+                .then(({result}) => setDeviceMaybe(result as (AdminDevice | null)));
         }
     }, [deviceId]);
 
-    const toggleManual = () => {
-        if (device) {
-            setDevice({
-                ...device,
-                configuration: {
-                    ...device.configuration,
-                    enabled_manually: !device.configuration.enabled_manually,
-                },
-            });
-        }
-    };
-
     const save = async () => {
         if (!device) return;
-        console.log(device);
 
         setLoading();
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setNotLoading();
+        dispatch(editDevice({
+            deviceId: Number(deviceId),
+            name: name,
+        }))
+            .then(unwrapResult)
+            .then(({result}) => setDeviceMaybe(result as (AdminDevice | null)));
     };
 
     const remove = async () => {
         if (!device) return;
-        console.log(device.id);
 
         setLoading();
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setNotLoading();
-        navigate("/admin/devices");
+        dispatch(deleteDevice(Number(deviceId)))
+            .then(unwrapResult)
+            .then(({result}) => result && navigate("/admin/devices"));
     };
 
     if (!device) return null;
@@ -114,43 +74,25 @@ const AdminDeviceDetailPage = () => {
                 <TextInput label="Owner Last Name" value={device.user.last_name} disabled />
                 <TextInput
                     label="Device Name"
-                    value={device.name}
-                    onChange={(e) => setDevice({ ...device, name: e.currentTarget.value })}
+                    value={name}
+                    onChange={(e) => setName(e.currentTarget.value)}
                 />
                 <TextInput
                     label="Electricity Price ($/kWh)"
                     type="number"
-                    value={device.configuration.electricity_price}
-                    onChange={(e) =>
-                        setDevice({
-                            ...device,
-                            configuration: {
-                                ...device.configuration,
-                                electricity_price: parseFloat(e.currentTarget.value) || 0,
-                            },
-                        })
-                    }
+                    value={device?.configuration?.electricity_price}
+                    disabled
                 />
                 <Switch
                     label="Enabled Automatically"
-                    checked={device.configuration.enabled_auto}
-                    onChange={(e) =>
-                        setDevice({
-                            ...device,
-                            configuration: {
-                                ...device.configuration,
-                                enabled_auto: e.currentTarget.checked,
-                            },
-                        })
-                    }
+                    checked={device?.configuration?.enabled_auto}
+                    disabled
                 />
-                <Button
-                    variant={device.configuration.enabled_manually ? "filled" : "outline"}
-                    color={device.configuration.enabled_manually ? "green" : "gray"}
-                    onClick={toggleManual}
-                >
-                    {device.configuration.enabled_manually ? "Turn Off" : "Turn On"}
-                </Button>
+                <Switch
+                    label="Enabled Manually"
+                    checked={device?.configuration?.enabled_manually}
+                    disabled
+                />
                 <Group mt="md">
                     <Button onClick={save}>Save</Button>
                     <Button color="red" variant="outline" onClick={remove}>Delete</Button>

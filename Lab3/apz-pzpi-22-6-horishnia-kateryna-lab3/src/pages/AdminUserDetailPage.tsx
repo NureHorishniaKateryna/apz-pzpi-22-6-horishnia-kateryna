@@ -3,14 +3,14 @@ import {Button, Container, Group, LoadingOverlay, Stack, Switch, TextInput, Titl
 import {useNavigate, useParams} from 'react-router';
 import {useDisclosure} from "@mantine/hooks";
 import {useDispatch, useSelector} from "react-redux";
-import type {RootState} from "../store.ts";
+import type {AppDispatch, RootState} from "../store.ts";
 import {unwrapResult} from "@reduxjs/toolkit";
 import {deleteUser, editUser, fetchUser} from '../reducers/admin_users_reducer.ts';
 import type {User} from "../types.ts";
 
 const AdminUserDetailPage = () => {
     const { userId } = useParams();
-    const dispatch = useDispatch();
+    const dispatch: AppDispatch = useDispatch();
     const user = useSelector((state: RootState) => state.admin_users.current);
 
     const [userFirst, setUserFirst] = useState("");
