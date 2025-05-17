@@ -427,8 +427,11 @@ def admin_edit_user(path: UserPath, body: EditUserRequest, header: AuthHeaders):
         user.first_name = body.first_name
     if body.last_name is not None:
         user.last_name = body.last_name
+    if body.is_admin is not None:
+        user.is_admin = body.is_admin
 
-    if body.email is not None or body.password is not None or body.first_name is not None or body.last_name is not None:
+    if body.email is not None or body.password is not None or body.first_name is not None \
+            or body.last_name is not None or body.is_admin is not None:
         session.commit()
 
     return user.to_json()
@@ -453,7 +456,7 @@ def admin_get_devices(query: PaginationQuery, header: AuthHeaders):
 
     return {
         "count": count,
-        "result": [device.to_json() for device in query_.all()],
+        "result": [device.to_json(True) for device in query_.all()],
     }
 
 
@@ -465,7 +468,7 @@ def admin_get_device(path: DevicePath, header: AuthHeaders):
     if device is None:
         return {"error": "Unknown device!"}, 404
 
-    return device.to_json()
+    return device.to_json(True)
 
 
 @app.patch("/api/admin/devices/<int:device_id>")
@@ -482,7 +485,7 @@ def admin_edit_device(path: DevicePath, body: DeviceEditRequest, header: AuthHea
     if body.name is not None:
         session.commit()
 
-    return device.to_json()
+    return device.to_json(True)
 
 
 @app.delete("/api/admin/devices/<int:device_id>")

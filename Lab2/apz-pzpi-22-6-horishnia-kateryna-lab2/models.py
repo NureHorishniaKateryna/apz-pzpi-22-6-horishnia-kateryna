@@ -52,14 +52,20 @@ class IotDevice(ModelsBase):
     api_key: str = Column(String(32), nullable=False, default=gen_device_api_key)
     configuration = relationship("DeviceConfiguration", uselist=False, back_populates="device")
 
-    def to_json(self) -> dict:
-        return {
+    def to_json(self, for_admin: bool = False) -> dict:
+        data = {
             "id": self.id,
-            "user_id": self.user_id,
             "name": self.name,
             "api_key": f"{self.id}.{self.api_key}",
             "configuration": self.configuration.to_json(),
         }
+
+        if for_admin:
+            data["user"] = self.user.to_json()
+        else:
+            data["user_id"] = self.user_id
+
+        return data
 
 
 class DeviceConfiguration(ModelsBase):

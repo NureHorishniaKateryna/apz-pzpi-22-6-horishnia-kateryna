@@ -76,3 +76,4 @@ class EditUserRequest(BaseModel):
     password: str | None = None
     first_name: str | None = None
     last_name: str | None = None
+    is_admin: bool | None = None
