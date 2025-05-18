@@ -31,7 +31,7 @@ import ua.nure.apz.api.UpdateDeviceRequest;
 public class DeviceInfoActivity extends AppCompatActivity {
     private EditText nameEditText, priceEditText, apiKeyTextView;
     private Switch autoSwitch;
-    private Button manualToggleButton, saveButton;
+    private Button manualToggleButton, saveButton, scheduleButton;
     private RecyclerView reportsRecyclerView;
     private ReportAdapter reportAdapter;
 
@@ -65,6 +65,7 @@ public class DeviceInfoActivity extends AppCompatActivity {
         autoSwitch = findViewById(R.id.autoSwitch);
         manualToggleButton = findViewById(R.id.manualToggleButton);
         saveButton = findViewById(R.id.saveButton);
+        scheduleButton = findViewById(R.id.scheduleButton);
         reportsRecyclerView = findViewById(R.id.reportsRecyclerView);
 
         reportsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -154,6 +155,12 @@ public class DeviceInfoActivity extends AppCompatActivity {
                     }
                 });
             }
+        });
+
+        scheduleButton.setOnClickListener(v -> {
+            Intent intent = new Intent(DeviceInfoActivity.this, DeviceScheduleActivity.class);
+            intent.putExtra("deviceId", deviceId);
+            startActivity(intent);
         });
     }
 

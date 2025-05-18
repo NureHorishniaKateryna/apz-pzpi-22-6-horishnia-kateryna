@@ -33,4 +33,13 @@
     <string name="turn_on">Turn On</string>
     <string name="failed_to_load_device">Failed to load device</string>
     <string name="failed_to_load_reports">Failed to load reports</string>
+    <string name="delete">Delete</string>
+    <string name="add_schedule">Add Schedule</string>
+    <string name="start_time_fmt">Start time - %02d:%02d</string>
+    <string name="end_time_fmt">End time - %02d:%02d</string>
+    <string name="add">Add</string>
+    <string name="add_failed">Add failed</string>
+    <string name="delete_failed">Delete failed</string>
+    <string name="failed_to_load_schedule">Failed to load schedule</string>
+    <string name="id_fmt">ID: %d</string>
 </resources>

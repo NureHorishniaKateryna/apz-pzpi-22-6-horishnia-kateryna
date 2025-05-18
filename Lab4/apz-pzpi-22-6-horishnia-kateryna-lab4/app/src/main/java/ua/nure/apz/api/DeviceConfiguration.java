@@ -8,9 +8,9 @@ public class DeviceConfiguration {
     @SerializedName("enabled_auto")
     private boolean enabledAuto;
     @SerializedName("electricity_price")
-    private long electricityPrice;
+    private double electricityPrice;
 
-    public DeviceConfiguration(boolean enabledManually, boolean enabledAuto, long electricityPrice) {
+    public DeviceConfiguration(boolean enabledManually, boolean enabledAuto, double electricityPrice) {
         this.enabledManually = enabledManually;
         this.enabledAuto = enabledAuto;
         this.electricityPrice = electricityPrice;
@@ -30,10 +30,10 @@ public class DeviceConfiguration {
         enabledAuto = value;
     }
 
-    public long getElectricityPrice() {
+    public double getElectricityPrice() {
         return electricityPrice;
     }
-    public void setElectricityPrice(long value) {
+    public void setElectricityPrice(double value) {
         electricityPrice = value;
     }
 }

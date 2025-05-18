@@ -1,7 +1,10 @@
 package ua.nure.apz.api;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.PATCH;
@@ -33,4 +36,13 @@ public interface ApiService {
 
     @GET("/api/devices/{deviceId}/reports")
     Call<PaginatedResponse<DeviceReport>> getReports(@Header("Token") String authToken, @Path("deviceId") long deviceId, @Query("page") int page, @Query("page_size") int pageSize);
+
+    @GET("/api/devices/{deviceId}/schedule")
+    Call<List<ScheduleItem>> getSchedule(@Header("Token") String authToken, @Path("deviceId") long deviceId);
+
+    @POST("/api/devices/{deviceId}/schedule")
+    Call<ScheduleItem> addSchedule(@Header("Token") String authToken, @Path("deviceId") long deviceId, @Body CreateScheduleRequest schedule);
+
+    @DELETE("/api/devices/{deviceId}/schedule/{scheduleId}")
+    Call<Void> deleteSchedule(@Header("Token") String authToken, @Path("deviceId") long deviceId, @Path("scheduleId") long scheduleId);
 }
