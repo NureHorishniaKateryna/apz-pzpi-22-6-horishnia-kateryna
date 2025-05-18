@@ -1,10 +1,14 @@
 package ua.nure.apz.api;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Device {
     private long id;
     private String name;
+    @SerializedName("api_key")
     private String apiKey;
     private DeviceConfiguration configuration;
+    @SerializedName("user_id")
     private long userId;
 
     public Device(long id, String name, String apiKey, DeviceConfiguration configuration, long userId) {

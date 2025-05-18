@@ -51,6 +51,11 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceView
         notifyItemRangeInserted(start, newDevices.size());
     }
 
+    public void addDevice(int pos, Device newDevice) {
+        this.devices.add(pos, newDevice);
+        notifyItemRangeInserted(pos, 1);
+    }
+
     static class DeviceViewHolder extends RecyclerView.ViewHolder {
         TextView name, status, price;
 

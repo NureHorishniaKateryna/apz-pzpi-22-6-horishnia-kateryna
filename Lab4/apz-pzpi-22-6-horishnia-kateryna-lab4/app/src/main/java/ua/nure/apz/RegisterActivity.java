@@ -80,7 +80,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(@NonNull Call<AuthResponse> call, @NonNull Throwable t) {
-                statusText.setText(String.format(getString(R.string.network_error), t.getMessage()));
+                statusText.setText(String.format(getString(R.string.network_error_fmt), t.getMessage()));
             }
         });
     }

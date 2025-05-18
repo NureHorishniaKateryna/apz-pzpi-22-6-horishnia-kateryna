@@ -6,9 +6,18 @@
     <string name="register">Register</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
-    <string name="network_error">Network error: %s</string>
+    <string name="network_error_fmt">Network error: %s</string>
+    <string name="network_error">Network error</string>
     <string name="failed_to_parse_error">Failed to parse error.</string>
     <string name="error_fmt">Error: %s</string>
     <string name="register_instead">Register instead</string>
     <string name="login_instead">Login instead</string>
+    <string name="create_device">Create Device</string>
+    <string name="logout">Logout</string>
+    <string name="failed_to_load_devices">Failed to load devices</string>
+    <string name="failed_to_create_device">Failed to create device</string>
+    <string name="name">Name</string>
+    <string name="create">Create</string>
+    <string name="cancel">Cancel</string>
+    <string name="electricity_price">Electricity price</string>
 </resources>

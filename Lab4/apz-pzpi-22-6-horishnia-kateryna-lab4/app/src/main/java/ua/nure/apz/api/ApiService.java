@@ -16,4 +16,7 @@ public interface ApiService {
 
     @GET("/api/devices")
     Call<PaginatedResponse<Device>> getDevices(@Header("Token") String authToken, @Query("page") int page, @Query("page_size") int pageSize);
+
+    @POST("/api/devices")
+    Call<Device> createDevice(@Header("Token") String authToken, @Body CreateDeviceRequest body);
 }

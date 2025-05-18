@@ -1,8 +1,13 @@
 package ua.nure.apz.api;
 
+import com.google.gson.annotations.SerializedName;
+
 public class DeviceConfiguration {
+    @SerializedName("enabled_manually")
     private boolean enabledManually;
+    @SerializedName("enabled_auto")
     private boolean enabledAuto;
+    @SerializedName("electricity_price")
     private long electricityPrice;
 
     public DeviceConfiguration(boolean enabledManually, boolean enabledAuto, long electricityPrice) {
