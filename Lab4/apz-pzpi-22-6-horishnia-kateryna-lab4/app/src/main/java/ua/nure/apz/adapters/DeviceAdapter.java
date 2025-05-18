@@ -1,0 +1,65 @@
+package ua.nure.apz.adapters;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
+
+import ua.nure.apz.R;
+import ua.nure.apz.api.Device;
+
+public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceViewHolder> {
+    private List<Device> devices;
+
+    public DeviceAdapter(List<Device> devices) {
+        this.devices = devices;
+    }
+
+    public void setDevices(List<Device> newDevices) {
+        this.devices = newDevices;
+        notifyDataSetChanged();
+    }
+
+    @NonNull
+    @Override
+    public DeviceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_device, parent, false);
+        return new DeviceViewHolder(v);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull DeviceViewHolder holder, int position) {
+        Device d = devices.get(position);
+        holder.name.setText(d.getName());
+        holder.status.setText(d.getConfiguration().getEnabledManually() ? "ON" : "OFF");
+        holder.price.setText("" + d.getConfiguration().getElectricityPrice());
+    }
+
+    @Override
+    public int getItemCount() {
+        return devices.size();
+    }
+
+    public void addDevices(List<Device> newDevices) {
+        int start = this.devices.size();
+        this.devices.addAll(newDevices);
+        notifyItemRangeInserted(start, newDevices.size());
+    }
+
+    static class DeviceViewHolder extends RecyclerView.ViewHolder {
+        TextView name, status, price;
+
+        public DeviceViewHolder(@NonNull View itemView) {
+            super(itemView);
+            name = itemView.findViewById(R.id.deviceName);
+            status = itemView.findViewById(R.id.deviceStatus);
+            price = itemView.findViewById(R.id.devicePrice);
+        }
+    }
+}
+
