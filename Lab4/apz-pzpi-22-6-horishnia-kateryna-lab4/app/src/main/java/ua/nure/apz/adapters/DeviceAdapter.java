@@ -1,5 +1,7 @@
 package ua.nure.apz.adapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,14 +12,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import ua.nure.apz.DeviceInfoActivity;
 import ua.nure.apz.R;
 import ua.nure.apz.api.Device;
 
 public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceViewHolder> {
     private List<Device> devices;
+    private Context context;
 
-    public DeviceAdapter(List<Device> devices) {
+    public DeviceAdapter(List<Device> devices, Context context) {
         this.devices = devices;
+        this.context = context;
     }
 
     public void setDevices(List<Device> newDevices) {
@@ -38,6 +43,11 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceView
         holder.name.setText(d.getName());
         holder.status.setText(d.getConfiguration().getEnabledManually() ? "ON" : "OFF");
         holder.price.setText("" + d.getConfiguration().getElectricityPrice());
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DeviceInfoActivity.class);
+            intent.putExtra("deviceId", d.getId());
+            context.startActivity(intent);
+        });
     }
 
     @Override
@@ -56,7 +66,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceView
         notifyItemRangeInserted(pos, 1);
     }
 
-    static class DeviceViewHolder extends RecyclerView.ViewHolder {
+    public static class DeviceViewHolder extends RecyclerView.ViewHolder {
         TextView name, status, price;
 
         public DeviceViewHolder(@NonNull View itemView) {

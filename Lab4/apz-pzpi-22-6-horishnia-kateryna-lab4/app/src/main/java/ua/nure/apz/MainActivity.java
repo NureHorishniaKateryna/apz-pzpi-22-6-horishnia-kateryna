@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new DeviceAdapter(new ArrayList<>());
+        adapter = new DeviceAdapter(new ArrayList<>(), MainActivity.this);
         recyclerView.setAdapter(adapter);
 
         apiService = ApiClient.getClient().create(ApiService.class);

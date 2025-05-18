@@ -20,4 +20,17 @@
     <string name="create">Create</string>
     <string name="cancel">Cancel</string>
     <string name="electricity_price">Electricity price</string>
+    <string name="save">Save</string>
+    <string name="auto_enabled">Auto Enabled</string>
+    <string name="api_key">API Key</string>
+    <string name="invalid_electricity_price">Invalid electricity price</string>
+    <string name="name_saved">Name saved</string>
+    <string name="failed_to_save_name">Failed to save name</string>
+    <string name="config_saved">Config saved</string>
+    <string name="failed_to_save_config">Failed to save config</string>
+    <string name="failed_to_update_state">Failed to update state</string>
+    <string name="turn_off">Turn Off</string>
+    <string name="turn_on">Turn On</string>
+    <string name="failed_to_load_device">Failed to load device</string>
+    <string name="failed_to_load_reports">Failed to load reports</string>
 </resources>
