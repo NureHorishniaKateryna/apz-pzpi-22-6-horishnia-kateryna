@@ -119,3 +119,13 @@ class DeviceReport(ModelsBase):
             "enabled": self.enabled,
             "enabled_for": self.enabled_for,
         }
+
+
+class FcmToken(ModelsBase):
+    __tablename__ = "fcm_tokens"
+
+    id: int = Column(Integer, primary_key=True)
+    user_id: int = Column(Integer, ForeignKey("users.id"))
+    user = relationship("User")
+    fcm_token: str = Column(String(), nullable=False)
+    last_active_at: datetime = Column(DateTime, nullable=False)

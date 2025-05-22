@@ -77,3 +77,7 @@ class EditUserRequest(BaseModel):
     first_name: str | None = None
     last_name: str | None = None
     is_admin: bool | None = None
+
+
+class FcmTokenRequest(BaseModel):
+    fcm_token: str

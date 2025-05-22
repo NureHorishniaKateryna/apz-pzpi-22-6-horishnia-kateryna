@@ -7,3 +7,4 @@ pyjwt
 flask-mqtt
 psycopg
 flask-cors
+pyfcm

@@ -10,14 +10,15 @@ import jwt
 from flask_mqtt import Mqtt
 from flask_openapi3 import OpenAPI
 from flask_cors import CORS
+from pyfcm import FCMNotification
 from sqlalchemy import create_engine, extract
 from sqlalchemy.orm import sessionmaker
 
 from errors import NotAuthorizedError
-from models import ModelsBase, User, UserSession, IotDevice, DeviceConfiguration, DeviceSchedule, DeviceReport
+from models import ModelsBase, User, UserSession, IotDevice, DeviceConfiguration, DeviceSchedule, DeviceReport, FcmToken
 from request_models import RegisterRequest, UserDevicesQuery, DeviceCreateRequest, AuthHeaders, DeviceEditRequest, \
     DeviceConfigEditRequest, DevicePath, DeviceScheduleAddRequest, SchedulePath, DeviceReportsQuery, \
-    DeviceReportRequest, PaginationQuery, UserPath, EditUserRequest, LoginRequest
+    DeviceReportRequest, PaginationQuery, UserPath, EditUserRequest, LoginRequest, FcmTokenRequest
 
 app = OpenAPI(__name__, doc_prefix="/docs")
 JWT_EXPIRE_TIME = 60 * 60 * 24
@@ -38,6 +39,8 @@ engine = create_engine(environ["DATABASE"])
 ModelsBase.metadata.create_all(engine)
 DBSession = sessionmaker(engine)
 session = DBSession()
+
+fcm = FCMNotification(service_account_file="apzk-a51ed-firebase-adminsdk-fbsvc-0e80eec747.json")
 
 POWER_CONSUMPTION = 5  # In watts
 
@@ -75,6 +78,18 @@ def handle_mqtt_message(client, userdata, message):
     session.add(report)
     session.commit()
 
+    fcm_title = f"Device {'enabled' if payload['enabled'] else 'disabled'}"
+    fcm_body = f"Device {device.name} was {'enabled' if payload['enabled'] else 'disabled'}"
+    if not payload["enabled"]:
+        fcm_body += f" for {payload['enabled_for']//60} minutes"
+
+    for token in session.query(FcmToken).filter_by(user=device.user).order_by("-id").limit(10):
+        fcm.notify(
+            fcm_token=token.fcm_token,
+            notification_title=fcm_title,
+            notification_body=fcm_body,
+        )
+
 
 @app.errorhandler(NotAuthorizedError)
 def handle_not_authorized(_):
@@ -106,7 +121,8 @@ def auth_device(token: str) -> IotDevice:
     except ValueError:
         raise NotAuthorizedError
 
-    device = session.query(IotDevice).filter_by(id=device_id, api_key=key).join(DeviceConfiguration).scalar()
+    device = session.query(IotDevice).filter_by(id=device_id, api_key=key)\
+        .join(DeviceConfiguration).join(IotDevice.user).scalar()
     if device is None:
         raise NotAuthorizedError
 
@@ -163,6 +179,17 @@ def login(body: LoginRequest):
 def get_user(header: AuthHeaders):
     user = auth_user(header.token)
     return user.to_json()
+
+
+@app.post("/api/fcm")
+def save_fcm_token(body: FcmTokenRequest, header: AuthHeaders):
+    user = auth_user(header.token)
+
+    token = FcmToken(user=user, fcm_token=body.fcm_token, last_active_at=datetime.now(UTC))
+    session.add(token)
+    session.commit()
+
+    return "", 204
 
 
 @app.get("/api/devices")
