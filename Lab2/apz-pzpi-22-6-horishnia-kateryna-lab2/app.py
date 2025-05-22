@@ -11,7 +11,7 @@ from flask_mqtt import Mqtt
 from flask_openapi3 import OpenAPI
 from flask_cors import CORS
 from pyfcm import FCMNotification
-from sqlalchemy import create_engine, extract
+from sqlalchemy import create_engine, extract, desc
 from sqlalchemy.orm import sessionmaker
 
 from errors import NotAuthorizedError
@@ -40,7 +40,7 @@ ModelsBase.metadata.create_all(engine)
 DBSession = sessionmaker(engine)
 session = DBSession()
 
-fcm = FCMNotification(service_account_file="apzk-a51ed-firebase-adminsdk-fbsvc-0e80eec747.json")
+fcm = FCMNotification(service_account_file="apz-a51ed-firebase-adminsdk-fbsvc-0e80eec747.json")
 
 POWER_CONSUMPTION = 5  # In watts
 
@@ -79,11 +79,11 @@ def handle_mqtt_message(client, userdata, message):
     session.commit()
 
     fcm_title = f"Device {'enabled' if payload['enabled'] else 'disabled'}"
-    fcm_body = f"Device {device.name} was {'enabled' if payload['enabled'] else 'disabled'}"
+    fcm_body = f"Device {device.name} was {'enabled' if payload['enabled'] else 'disabled'}."
     if not payload["enabled"]:
-        fcm_body += f" for {payload['enabled_for']//60} minutes"
+        fcm_body += f"It was enabled for {payload['enabled_for']} seconds"
 
-    for token in session.query(FcmToken).filter_by(user=device.user).order_by("-id").limit(10):
+    for token in session.query(FcmToken).filter_by(user=device.user).order_by(desc(FcmToken.id)).limit(10):
         fcm.notify(
             fcm_token=token.fcm_token,
             notification_title=fcm_title,
