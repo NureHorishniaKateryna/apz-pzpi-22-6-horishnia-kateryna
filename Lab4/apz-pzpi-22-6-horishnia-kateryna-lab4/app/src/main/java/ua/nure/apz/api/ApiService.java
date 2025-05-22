@@ -45,4 +45,7 @@ public interface ApiService {
 
     @DELETE("/api/devices/{deviceId}/schedule/{scheduleId}")
     Call<Void> deleteSchedule(@Header("Token") String authToken, @Path("deviceId") long deviceId, @Path("scheduleId") long scheduleId);
+
+    @POST("/api/fcm")
+    Call<Void> sendFcmToken(@Header("Token") String authToken, @Body SendFcmTokenRequest body);
 }

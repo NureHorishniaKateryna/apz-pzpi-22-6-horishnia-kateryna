@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -18,6 +19,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -29,6 +32,7 @@ import ua.nure.apz.api.ApiService;
 import ua.nure.apz.api.CreateDeviceRequest;
 import ua.nure.apz.api.Device;
 import ua.nure.apz.api.PaginatedResponse;
+import ua.nure.apz.api.SendFcmTokenRequest;
 
 public class MainActivity extends AppCompatActivity {
     private final int PAGE_SIZE = 25;
@@ -79,6 +83,23 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
+        });
+
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                Log.w("fcm", "Fetching FCM registration token failed", task.getException());
+                return;
+            }
+
+            apiService.sendFcmToken(authToken, new SendFcmTokenRequest(task.getResult())).enqueue(new Callback<>() {
+                @Override
+                public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                }
+            });
         });
     }
 
