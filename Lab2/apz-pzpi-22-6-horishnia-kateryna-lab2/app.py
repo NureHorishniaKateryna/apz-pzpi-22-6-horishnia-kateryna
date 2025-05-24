@@ -1,15 +1,20 @@
+import glob
 import json
+import shutil
 import ssl
+import subprocess
 from base64 import b64decode
 from datetime import datetime, UTC, date, timedelta
 from os import environ
+from pathlib import Path
 from time import time
 
 import bcrypt
 import jwt
+from flask import send_file, request
+from flask_cors import CORS
 from flask_mqtt import Mqtt
 from flask_openapi3 import OpenAPI
-from flask_cors import CORS
 from pyfcm import FCMNotification
 from sqlalchemy import create_engine, extract, desc
 from sqlalchemy.orm import sessionmaker
@@ -43,6 +48,8 @@ session = DBSession()
 fcm = FCMNotification(service_account_file="apz-a51ed-firebase-adminsdk-fbsvc-0e80eec747.json")
 
 POWER_CONSUMPTION = 5  # In watts
+BACKUPS_DIR = Path(environ.get("BACKUPS_DIR", "./backups"))
+BACKUPS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 @mqtt.on_connect()
@@ -521,6 +528,118 @@ def admin_delete_device(path: DevicePath, header: AuthHeaders):
 
     session.query(IotDevice).filter_by(id=path.device_id).delete()
     return "", 204
+
+
+@app.get("/api/admin/system/backups")
+def list_backups(header: AuthHeaders):
+    auth_admin(header.token)
+
+    db_uri = environ["DATABASE"]
+    backup_prefix = db_uri.split("://")[0]
+
+    backups = glob.glob(f"{BACKUPS_DIR}/{backup_prefix}_*.bak", recursive=False, include_hidden=False)
+    backups = sorted(backups, reverse=True)
+    backups = map(lambda path: str(Path(path).relative_to(BACKUPS_DIR)), backups)
+    backups = list(backups)
+
+    return backups
+
+
+@app.post("/api/admin/system/backups")
+def create_backup(header: AuthHeaders):
+    auth_admin(header.token)
+
+    db_uri = environ["DATABASE"]
+    backup_prefix = db_uri.split("://")[0]
+    backup_name = datetime.now(UTC).strftime("%d%m%Y-%H%M%S")
+    backup_file = f"{backup_prefix}_{backup_name}.bak"
+
+    if db_uri.startswith("sqlite:///"):
+        db_path = db_uri.replace("sqlite:///", "")
+        shutil.copy2(db_path, BACKUPS_DIR / backup_file)
+    elif db_uri.startswith("postgresql://"):
+        parsed = db_uri.replace("postgresql://", "")
+        user_pass, host_db = parsed.split("@")
+        user, password = user_pass.split(":")
+        host, dbname = host_db.split("/")
+
+        dump_env = environ.copy()
+        dump_env["PGPASSWORD"] = password
+
+        cmd = ["pg_dump", "-U", user, "-h", host, "-F", "c", "-f", str(BACKUPS_DIR / backup_file), dbname]
+        subprocess.run(cmd, check=True, env=dump_env)
+    else:
+        return {"error": "Unsupported database type"}, 400
+
+    return "", 204
+
+
+@app.route("/api/admin/system/backups/<string:filename>", methods=["GET"])
+def download_backup(filename: str):
+    auth_admin(request.headers.get("token", ""))
+
+    if "/" in filename or "\\" in filename:
+        return {"error": "Unknown backup"}, 404
+
+    path = BACKUPS_DIR / filename
+    if not path.exists():
+        return {"error": "Unknown backup"}, 404
+
+    return send_file(path, as_attachment=True)
+
+
+@app.route("/api/admin/system/backups/<string:filename>", methods=["DELETE"])
+def delete_backup(filename: str):
+    auth_admin(request.headers.get("token", ""))
+
+    if "/" in filename or "\\" in filename:
+        return {"error": "Unknown backup"}, 404
+
+    path = BACKUPS_DIR / filename
+    if not path.exists():
+        return {"error": "Unknown backup"}, 404
+
+    path.unlink(missing_ok=True)
+    return "", 204
+
+
+@app.route("/api/admin/system/backups/<string:filename>/restore", methods=["POST"])
+def restore_backup(filename: str):
+    auth_admin(request.headers.get("token", ""))
+
+    if "/" in filename or "\\" in filename:
+        return {"error": "Unknown backup"}, 404
+
+    db_uri = environ["DATABASE"]
+    backup_prefix = db_uri.split("://")[0]
+    backup_file = f"{backup_prefix}_{filename.split('_')[1]}"
+    backup_path = BACKUPS_DIR / backup_file
+
+    if not backup_path.exists():
+        return {"error": "Unknown backup"}, 404
+
+    if db_uri.startswith("sqlite:///"):
+        db_path = db_uri.replace("sqlite:///", "")
+        shutil.copy2(backup_path, db_path)
+
+    elif db_uri.startswith("postgresql://"):
+        parsed = db_uri.replace("postgresql://", "")
+        user_pass, host_db = parsed.split("@")
+        user, password = user_pass.split(":")
+        host, dbname = host_db.split("/")
+
+        dump_env = environ.copy()
+        dump_env["PGPASSWORD"] = password
+
+        user_host = ["-U", user, "-h", host]
+        subprocess.run(["dropdb", *user_host, dbname], check=True, env=dump_env)
+        subprocess.run(["createdb", *user_host, dbname], check=True, env=dump_env)
+        subprocess.run(["pg_restore", *user_host, "-d", dbname, str(backup_path)], check=True, env=dump_env)
+    else:
+        return {"error": "Unsupported database type"}, 400
+
+    return "", 204
+
 
 
 if __name__ == "__main__":
