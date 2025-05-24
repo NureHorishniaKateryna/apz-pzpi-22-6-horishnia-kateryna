@@ -33,6 +33,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         links.push(
             { label: "Admin Users", to: "/admin/users" },
             { label: "Admin Devices", to: "/admin/devices" },
+            { label: "Admin Backups", to: "/admin/backups" },
         );
     }
 

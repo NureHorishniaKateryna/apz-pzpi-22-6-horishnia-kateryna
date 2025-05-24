@@ -10,6 +10,7 @@ import AdminDeviceDetailPage from "./pages/AdminDeviceDetailPage.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
 import RegisterPage from "./pages/RegisterPage.tsx";
 import AppLayout from "./pages/AppLayout.tsx";
+import AdminBackupsPage from './pages/AdminBackupsPage.tsx';
 
 function App() {
     const default_route = <Navigate to="/login" replace/>;
@@ -33,6 +34,7 @@ function App() {
                                 <Route path="/admin/users/:userId" element={<AdminUserDetailPage/>}/>
                                 <Route path="/admin/devices" element={<AdminDevicesPage/>}/>
                                 <Route path="/admin/devices/:deviceId" element={<AdminDeviceDetailPage/>}/>
+                                <Route path="/admin/backups" element={<AdminBackupsPage/>}/>
 
                             </Routes>
                         </AppLayout>
