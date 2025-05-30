@@ -1,1 +1,301 @@
+Харківський національний університет радіоелектроніки
+Факультет комп’ютерних наук
 
+
+Кафедра програмної інженерії
+
+
+
+ЗВІТ
+до практичного заняття №1
+з дисципліни «Архітектура програмного забезпечення»
+на тему «Патерн Strategy»
+
+
+Виконала:
+ст. гр. ПЗПІ-22-6,
+Горішня Катерина Олексіївна
+
+
+Перевірив:
+ст. викладач каф. ПІ,
+Сокорчук Ігор Петрович
+
+
+Харків 2025
+
+
+1 ІСТОРІЯ ЗМІН
+
+№	Дата	Версія звіту	Опис змін
+1	17.05.2025	0.1	Створено титульну сторінку, розділ «Завдання» та «Опис виконаної роботи»
+2	17.05.2025	0.2	Створено розділ «Висновки»
+3	18.05.2025	0.3	Додано слайди презентації у Додаток Б та приклади програмного коду у Додаток В
+4	30.05.2025	0.4	Додано посилання на відео та хронологічний опис у Додаток А
+
+ 
+2 ЗАВДАННЯ
+
+Завдання на практичне заняття №1
+1. Підготувати доповідь на тему: «Шаблон (патерн) проєктування ПЗ»
+2. Створити та оформити слайди презентації доповіді
+3. Створити та опублікувати на YouTube відеозапис доповіді
+4. Оформити та завантажити на dl.nure.ua звіт до виконаної роботи
+5. При потребі створити та налаштувати у GitHub обліковий запис для облікового запису студента в домені @nure.ua
+6. Створити для виконання завдань з дисципліни GitHub репозиторій iз вказаним на https://dl.nure.ua іменем та з головною гілкою main
+7. Створити у корені створеного репозиторію файл README.md з вказаним далі змістом та вказані далі директорії для окремих завдань
+8. Експортувати звіт у файл у простому текстововому форматі та завантажити цей файл у директорію Pract1 у репозиторії GitHub
+9. Завантажити у вказану далі піддиректорію увесь програмний код, який розглядається у доповіді ПЗ1
+
+ 
+3 ОПИС ВИКОНАНОЇ РОБОТИ
+
+1. Було обрано патерн проєктування Strategy (Стратегія) для аналізу.
+2. Було визначено, що Strategy належить до поведінкових шаблонів за класифікацією GoF.
+5. Було проаналізовано проблему, для якої доцільне використання патерна Strategy – зміна поведінки об’єкта без необхідності змінювати його структуру.
+3. Було досліджено структуру патерна: інтерфейс Strategy, класи ConcreteStrategy, Context. Описано основні компоненти патерна – інтерфейс стратегії, реалізації стратегій і контекст, який делегує виконання.
+4. Було представлено UML-діаграму структури патерна Strategy, яка відображає зв’язки між класами Strategy, ConcreteStrategy і Context (рис. Б.7).
+6. Було сформульовано переваги патерну: гнучкість, модульність, тестованість, дотримання SRP та OCP, та визначено недоліки: збільшення кількості класів, когнітивне навантаження (рис. Б.8-Б.9).
+7. Було реалізовано приклад патерна мовою C# на прикладі сортування. Реалізовано програмний код сортування з використанням Strategy на C# для демонстрації динамічної заміни алгоритмів (додаток В).
+8. Було розглянуто застосування Strategy у платіжних системах (Stripe, PayPal), ігровій логіці NPC та системах персоналізованих рекомендацій (YouTube, Netflix).
+9. Було створено презентацію, яка включає теорію, UML-схему, реалізацію коду та приклади з практики (додаток Б).
+
+ 
+4 ВИСНОВКИ
+
+У результаті виконання практичного завдання було поглиблено знання щодо структури та особливостей шаблонів проєктування, зокрема патерна «Strategy». Було досліджено мету застосування патерна, його структуру, принципи реалізації та переваги при використанні в розробці програмного забезпечення. У процесі роботи було реалізовано декілька прикладів застосування патерна Strategy мовою C#, що охоплюють типові сценарії.
+Була представлена UML-діаграма патерна, проаналізовано типові області застосування та виявлено як переваги (гнучкість, масштабованість, підтримка принципів SOLID), так і потенційні недоліки (зростання кількості класів, складність у керуванні залежностями). Результати роботи оформлено у вигляді презентації, підготовлено доповідь і записано відео, яке завантажено на YouTube. Також завантажено вихідний код до GitHub-репозиторію.
+
+ 
+ДОДАТОК А
+Посилання на відеозапис доповіді та хронологічний опис
+
+Відеозапис доповіді на YouTube: https://youtu.be/pdf2UlLGlT0.
+Хронологічний опис:
+0:00 - Привітання
+0:10 - Зміст презентації
+0:46 - Вступ: Що таке шаблони проєктування
+1:28 - Визначення патерну Strategy
+2:06 - Проблема, яку вирішує патерн Strategy
+2:43 - Структура патерну Strategy
+3:16 - UML-діаграма патерну Strategy
+3:51 - Переваги використання патерну Strategy 
+4:31 - Недоліки використання патерну Strategy
+5:03 - Реалізація патерну Strategy на мовою С# 
+5:57 - Застосування Strategy у платіжних системах
+7:10 - Застосування Strategy у сфері ігрової індустрії
+8:16 - Застосування Strategy в системах персоналізованих рекомендацій
+9:21 - Висновки
+10:13 - Список використаних джерел
+10:19 - Завершальний слайд
+
+ 
+ДОДАТОК Б
+Слайди презентації
+
+Рисунок Б.1 – Титульний слайд
+
+Рисунок Б.2 – Зміст доповіді
+ 
+Рисунок Б.3 – Вступ: Що таке шаблони проєктування
+
+Рисунок Б.4 – Визначення патерну Strategy
+ 
+Рисунок Б.5 – Проблема, яку вирішує патерн Strategy
+
+Рисунок Б.6 – Структура патерну Strategy
+ 
+Рисунок Б.7 – UML-діаграма патерну Strategy
+
+Рисунок Б.8 – Переваги використання патерну Strategy
+ 
+Рисунок Б.9 – Недоліки використання патерну Strategy
+
+Рисунок Б.10 – Реалізація патерну Strategy на мовою С#
+ 
+Рисунок Б.11 – Застосування Strategy у платіжних системах
+
+Рисунок Б.12 – Застосування Strategy у сфері ігрової індустрії
+ 
+Рисунок Б.13 – Застосування Strategy в системах персоналізованих рекомендацій
+
+Рисунок Б.14 – Висновки
+ 
+Рисунок Б.15 – Список використаних джерел
+
+Рисунок Б.16 – Завершальний слайд 
+ 
+
+ДОДАТОК В
+Приклади програмного коду
+
+Реалізація патерну Strategy мовою С#
+ 1   using System;
+ 2   using System.Linq;
+ 3   
+ 4   interface ISortStrategy { void Sort(int[] array); }
+ 5   
+ 6   class BubbleSort : ISortStrategy {
+ 7       public void Sort(int[] array) {
+ 8           for (int i = 0; i < array.Length - 1; i++)
+ 9               for (int j = 0; j < array.Length - i - 1; j++)
+10                   if (array[j] > array[j + 1]) {
+11                       var t = array[j]; array[j] = array[j + 1];     
+     array[j + 1] = t;
+12                   }
+13           Console.WriteLine("Bubble: " + string.Join(", ", array));
+14       }
+15   }
+16   
+17   class QuickSort : ISortStrategy {
+18       public void Sort(int[] array) {
+19           Array.Sort(array);
+20           Console.WriteLine("Quick: " + string.Join(", ", array));
+21       }
+22   }
+23   
+24   class Sorter {
+25       private ISortStrategy strategy;
+26       public void SetStrategy(ISortStrategy s) => strategy = s;
+27       public void Sort(int[] array) => strategy.Sort(array);
+28   }
+29   
+30   class Program {
+31       static void Main() {
+32           var sorter = new Sorter();
+33           var small = new[] { 5, 3, 1, 4, 2 };
+34           var big = Enumerable.Range(1, 1000).Reverse().ToArray();
+35   
+36           sorter.SetStrategy(new BubbleSort());
+37           sorter.Sort((int[])small.Clone());
+38   
+39           sorter.SetStrategy(new QuickSort());
+40           sorter.Sort((int[])big.Clone());
+41       }
+42   }
+
+Застосування Strategy у платіжних системах
+ 1   interface IPaymentStrategy {
+ 2       void Pay(decimal amount);
+ 3   }
+ 4   
+ 5   class CreditCardPayment : IPaymentStrategy {
+ 6       public void Pay(decimal amount) {
+ 7           Console.WriteLine($"Paid {amount} with Credit Card.");
+ 8       }
+ 9   }
+10   
+11   class PayPalPayment : IPaymentStrategy {
+12       public void Pay(decimal amount) {
+13           Console.WriteLine($"Paid {amount} via PayPal.");
+14       }
+15   }
+16   
+17   class PaymentProcessor {
+18       private IPaymentStrategy _strategy;
+19   
+20       public void SetStrategy(IPaymentStrategy strategy) {
+21           _strategy = strategy;
+22       }
+23   
+24       public void ProcessPayment(decimal amount) {
+25           _strategy.Pay(amount);
+26       }
+27   }
+28   
+29   class Program {
+30       static void Main() {
+31           var processor = new PaymentProcessor();
+32   
+33           processor.SetStrategy(new CreditCardPayment());
+34           processor.ProcessPayment(100);
+35   
+36           processor.SetStrategy(new PayPalPayment());
+37           processor.ProcessPayment(50);
+38       }
+39   }
+40           sorter.Sort((int[])big.Clone());
+41       }
+42   }
+
+Застосування Strategy у сфері ігрової індустрії
+ 1   interface IBehavior {
+ 2       void Act();
+ 3   }
+ 4   
+ 5   class AggressiveBehavior : IBehavior {
+ 6       public void Act() {
+ 7           Console.WriteLine("Attacks the enemy aggressively.");
+ 8       }
+ 9   }
+10   
+11   class DefensiveBehavior : IBehavior {
+12       public void Act() {
+13           Console.WriteLine("Holds position and defends.");
+14       }
+15   }
+16   
+17   class NPC {
+18       private IBehavior _behavior;
+19   
+20       public void SetBehavior(IBehavior behavior) {
+21           _behavior = behavior;
+22       }
+23   
+24       public void PerformAction() {
+25           _behavior.Act();
+26       }
+27   }
+28   
+29   class Program {
+30       static void Main() {
+31           var enemy = new NPC();
+32   
+33           enemy.SetBehavior(new AggressiveBehavior());
+34           enemy.PerformAction();
+35   
+36           enemy.SetBehavior(new DefensiveBehavior());
+37           enemy.PerformAction();
+38       }
+39   }
+
+Застосування Strategy в системах персоналізованих рекомендацій
+ 1   interface IRecommendationStrategy {
+ 2       void Recommend(string user);
+ 3   }
+ 4   
+ 5   class CollaborativeFiltering : IRecommendationStrategy {
+ 6       public void Recommend(string user) {
+ 7           Console.WriteLine($"{user}: collaborative recommendations");
+ 8       }
+ 9   }
+10   
+11   class ContentFiltering : IRecommendationStrategy {
+12       public void Recommend(string user) {
+13           Console.WriteLine($"{user}: content-based recommendations");
+14       }
+15   }
+16   
+17   class RecommenderSystem {
+18       private IRecommendationStrategy _strategy;
+19   
+20       public void SetStrategy(IRecommendationStrategy strategy) {
+21           _strategy = strategy;
+22       }
+23   
+24       public void RecommendFor(string user) {
+25           _strategy.Recommend(user);
+26       }
+27   }
+28   
+29   class Program {
+30       static void Main() {
+31           var system = new RecommenderSystem();
+32   
+33           system.SetStrategy(new CollaborativeFiltering());
+34           system.RecommendFor("Alice");
+35   
+36           system.SetStrategy(new ContentFiltering());
+37           system.RecommendFor("Bob");
+38       }
+39   }
