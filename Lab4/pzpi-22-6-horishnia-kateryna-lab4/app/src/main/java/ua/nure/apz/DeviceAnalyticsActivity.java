@@ -42,8 +42,8 @@ public class DeviceAnalyticsActivity extends AppCompatActivity {
         thisMonthCard = findViewById(R.id.thisMonthCard);
         last28DaysCard = findViewById(R.id.last28DaysCard);
 
-        thisMonthCard.setName("This month");
-        last28DaysCard.setName("Last 28 days");
+        thisMonthCard.setName(getString(R.string.this_month));
+        last28DaysCard.setName(getString(R.string.last_28_days));
 
         SharedPreferences prefs = getSharedPreferences("apz", MODE_PRIVATE);
         authToken = prefs.getString("token", null);

@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 
+import ua.nure.apz.R;
+
 public class AnalyticsCard extends CardView {
     private TextView nameView;
 
@@ -69,23 +71,23 @@ public class AnalyticsCard extends CardView {
         cardLayout.addView(nameView);
 
         enableCountView = new AnalyticsText(context);
-        enableCountView.setDescription("enableCountView");
+        enableCountView.setDescription(context.getString(R.string.enable_count));
         cardLayout.addView(enableCountView);
 
         totalTimeView = new AnalyticsText(context);
-        totalTimeView.setDescription("totalTime");
+        totalTimeView.setDescription(context.getString(R.string.total_time));
         cardLayout.addView(totalTimeView);
 
         averageTimeView = new AnalyticsText(context);
-        averageTimeView.setDescription("averageTime");
+        averageTimeView.setDescription(context.getString(R.string.average_time));
         cardLayout.addView(averageTimeView);
 
         electricityConsumptionView = new AnalyticsText(context);
-        electricityConsumptionView.setDescription("electricityConsumption");
+        electricityConsumptionView.setDescription(context.getString(R.string.electricity_consumption));
         cardLayout.addView(electricityConsumptionView);
 
         electricityPriceView = new AnalyticsText(context);
-        electricityPriceView.setDescription("electricityPrice");
+        electricityPriceView.setDescription(context.getString(R.string.electricity_price_a));
         cardLayout.addView(electricityPriceView);
     }
 

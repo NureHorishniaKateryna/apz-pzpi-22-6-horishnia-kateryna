@@ -43,4 +43,11 @@
     <string name="failed_to_load_schedule">Failed to load schedule</string>
     <string name="id_fmt">ID: %d</string>
     <string name="failed_to_load_analytics">Failed to load analytics</string>
+    <string name="enable_count">Enable Count</string>
+    <string name="total_time">Total Time</string>
+    <string name="average_time">Average Time</string>
+    <string name="electricity_consumption">Electricity Consumption</string>
+    <string name="electricity_price_a">Electricity Price</string>
+    <string name="this_month">This month</string>
+    <string name="last_28_days">Last 28 days</string>
 </resources>
