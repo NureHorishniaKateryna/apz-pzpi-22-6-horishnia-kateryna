@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "857055156209",
+    "project_id": "apzk-a51ed",
+    "storage_bucket": "apzk-a51ed.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:857055156209:android:91a346d34a3f3d16c15650",
+        "android_client_info": {
+          "package_name": "ua.nure.apz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQyr_R0dmcAgh9Rtrgqdl2icxWz6FNfy4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

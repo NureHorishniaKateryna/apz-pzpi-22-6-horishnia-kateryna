@@ -47,6 +47,12 @@
         android:layout_height="wrap_content"
         android:text="View schedule" />
 
+    <Button
+        android:id="@+id/analyticsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="View analytics" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/reportsRecyclerView"
         android:layout_width="match_parent"

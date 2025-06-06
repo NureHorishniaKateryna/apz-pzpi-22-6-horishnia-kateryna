@@ -34,6 +34,9 @@ public interface ApiService {
     @PATCH("/api/devices/{deviceId}/config")
     Call<Device> updateDeviceConfig(@Header("Token") String authToken, @Path("deviceId") long deviceId, @Body UpdateDeviceConfigRequest body);
 
+    @GET("/api/devices/{deviceId}/analytics")
+    Call<AnalyticsResponse> getDeviceAnalytics(@Header("Token") String authToken, @Path("deviceId") long deviceId);
+
     @GET("/api/devices/{deviceId}/reports")
     Call<PaginatedResponse<DeviceReport>> getReports(@Header("Token") String authToken, @Path("deviceId") long deviceId, @Query("page") int page, @Query("page_size") int pageSize);
 

@@ -16,6 +16,9 @@
         android:theme="@style/Theme.Apz"
         tools:targetApi="31">
         <activity
+            android:name=".DeviceAnalyticsActivity"
+            android:exported="false" />
+        <activity
             android:name=".DeviceScheduleActivity"
             android:exported="false" />
         <activity

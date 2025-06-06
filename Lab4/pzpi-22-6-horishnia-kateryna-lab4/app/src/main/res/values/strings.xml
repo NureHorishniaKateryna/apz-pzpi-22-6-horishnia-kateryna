@@ -42,4 +42,5 @@
     <string name="delete_failed">Delete failed</string>
     <string name="failed_to_load_schedule">Failed to load schedule</string>
     <string name="id_fmt">ID: %d</string>
+    <string name="failed_to_load_analytics">Failed to load analytics</string>
 </resources>
