@@ -368,7 +368,7 @@ def get_device_analytics(path: DevicePath, header: AuthHeaders):
     last_28_days_count = last_28_days.count()
 
     this_month_all = this_month.all()
-    last_28_days_all = this_month.all()
+    last_28_days_all = last_28_days.all()
     this_month_enabled_time = sum(*zip(*this_month_all)) if this_month_all else 0
     last_28_days_enabled_time = sum(*zip(*last_28_days_all)) if last_28_days_all else 0
 
