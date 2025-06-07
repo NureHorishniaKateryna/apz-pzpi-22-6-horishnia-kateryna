@@ -115,7 +115,7 @@ class DeviceReport(ModelsBase):
 
     def to_json(self) -> dict:
         return {
-            "time": self.time,
+            "time": int(self.time.timestamp()),
             "enabled": self.enabled,
             "enabled_for": self.enabled_for,
         }
