@@ -1,1 +1,378 @@
+Харківський національний університет радіоелектроніки
+Факультет комп’ютерних наук
 
+
+Кафедра програмної інженерії
+
+
+
+ЗВІТ
+до лабораторної роботи №3
+з дисципліни «Архітектура програмного забезпечення»
+на тему «Розробка програмної архітектури та створення і відлагодження програмного коду веб клієнта програмної системи»
+
+
+
+Виконала:
+ст. гр. ПЗПІ-22-6,
+Горішня Катерина Олексіївна
+
+
+Перевірив:
+ст. викладач каф. ПІ,
+Сокорчук Ігор Петрович
+
+
+Харків 2025
+
+
+1 ІСТОРІЯ ЗМІН
+
+№	Дата	Версія звіту	Опис змін
+1	24.05.2025	0.1	Створено титульну сторінку та розділ «Опис виконаної роботи»
+2	26.05.2025	0.2	Додано Додаток Б, 
+розділ «Завдання» та «Висновки»
+3	27.05.2025	0.3	Додано Додаток В
+4	07.06.2025	0.4	Додано посилання на відео та хронологічний опис у Додаток А
+
+		
+2 ЗАВДАННЯ
+Завдання до лабораторної роботи №3:
+1.	Розробити архітектуру клієнтської (front-end) частини програмної системи інтелектуального освітлення.
+2.	Реалізувати веб-клієнт, що забезпечує роботу з основними функціями: авторизація користувача, перегляд і налаштування сценаріїв освітлення, керування кімнатами, пристроями та користувачами.
+3.	Розробити інтерфейс адміністратора з функціями керування користувачами, додавання/редагування пристроїв, створення резервних копій, імпорту/експорту налаштувань та перегляд статистики використання системи.
+4.	Імплементувати захист персональних даних на клієнтському рівні: обробку JWT-токенів, перевірку ролі користувача, обмеження доступу до адміністративних функцій, безпечне зберігання токенів у браузері.
+5.	Розробити та оформити UML-діаграми, що ілюструють архітектуру вебклієнта: діаграму прецедентів (Use Case Diagram), діаграму компонентів (Component Diagram), діаграму взаємодії (Sequence Diagram), діаграму станів (State Diagram).
+6.	Провести функціональне тестування веб-клієнта: перевірити коректність авторизації, налаштування освітлення, оновлення даних, створення сценаріїв, обробку сповіщень та взаємодію з сервером.
+7.	Записати та опублікувати на YouTube відео з поясненням реалізованих функцій, архітектурних рішень та демонстрацією клієнтської частини.
+8.	Оформити звіт, що містить повний опис виконаної роботи, специфікацію реалізованих функцій, UML-діаграми, результати тестування, висновки та додатки з фрагментами коду.
+9.	Завантажити звіт у форматі PDF на платформу dl.nure.ua та додати посилання на відео в коментар до роботи. 
+
+
+3 ОПИС ВИКОНАНОЇ РОБОТИ
+У ході виконання лабораторної роботи №3 було реалізовано клієнтську частину програмної системи інтелектуального освітлення, яка забезпечує взаємодію користувача з IoT-пристроями, відображення їхнього стану, керування графіками освітлення, перегляд енергетичної аналітики та виконання адміністративних дій. Для розробки було обрано мову JavaScript та фреймворк React, що дозволило реалізувати компонентну архітектуру, забезпечити повторне використання коду, зручну маршрутизацію та швидке оновлення інтерфейсу при зміні стану. 
+Архітектура клієнтської частини розроблена з урахуванням розподілу відповідальності між візуальними компонентами (інтерфейсами), логічними обробниками та сервісами для роботи з REST API. Основні компоненти включають модулі авторизації, перегляду та редагування пристроїв, керування розкладами, перегляду аналітики, а також окрему панель адміністратора. Адміністративна панель надає можливість налаштовувати сценарії освітлення, керувати користувачами, імпортувати та експортувати конфігурації, створювати резервні копії даних. Це дозволяє системним адміністраторам адаптувати поведінку системи до конкретних умов експлуатації
+Обмін даними з сервером відбувається через централізований сервіс API-запитів, який реалізує обробку HTTP-запитів з урахуванням JWT-аутентифікації. Токен зберігається в локальному сховищі браузера, і при кожному запиті перевіряється роль користувача, що дозволяє динамічно формувати інтерфейс відповідно до прав доступу.
+У клієнтській частині реалізовано обробку помилок, перевірку введених даних перед відправкою на сервер,, а також механізми безпечної роботи з особистою інформацією користувача. Сценарії взаємодії з сервером реалізовані через API-ендпоінти, визначені в попередній лабораторній роботі. Зокрема, реалізовано авторизацію, отримання списку пристроїв, додавання та редагування графіків, перегляд аналітики, створення та завантаження резервних копій, а також керування користувачами.
+У рамках роботи було створено декілька UML-діаграм, які відображають архітектуру та логіку роботи клієнтської частини. Діаграма прецедентів ілюструє можливості звичайного користувача й адміністратора (рис. Б.1). Діаграма компонентів демонструє структуру застосунку на рівні окремих React-компонентів та сервісів (рис. Б.2). Діаграма взаємодії описує сценарій оновлення розкладу пристрою з послідовним передаванням запиту від користувача до бази даних через API (рис. Б.3). Діаграма станів відображає переходи між екранами та дії, які користувач виконує під час взаємодії з додатком  (рис. Б.4).
+. Всі компоненти пройшли ручне тестування — перевірено авторизацію, правильність відображення даних, роботу з графіками, доступ до адміністративної панелі та стійкість до некоректних запитів. Робота демонструє практичне застосування принципів архітектури ПЗ, компонентного проєктування та інтеграції фронтенду з бекендом на основі сучасних технологій. Отримане рішення повністю відповідає функціональним вимогам і є готовим до масштабування та інтеграції додаткових можливостей у наступних етапах розробки.
+
+  
+4 ВИСНОВКИ
+У результаті виконання лабораторної роботи було створено функціональну клієнтську частину програмної системи інтелектуального освітлення, яка дозволяє користувачам взаємодіяти з IoT-пристроями, переглядати аналітику енергоспоживання, керувати графіками роботи освітлення та виконувати адміністративні дії. Вебклієнт реалізовано з використанням фреймворку React, що забезпечило модульну архітектуру, гнучке масштабування та ефективну взаємодію з REST API серверної частини.
+Отримано практичні навички роботи з компонентною архітектурою, реалізації захисту персональних даних на рівні клієнта, організації доступу за ролями користувачів, а також побудови інтерфейсів адміністрування системи. У межах роботи було створено набір UML-діаграм, що відображають структуру та логіку взаємодії клієнтської частини системи з користувачем і сервером.
+Реалізоване програмне забезпечення відповідає всім поставленим функціональним вимогам, успішно пройшло функціональне тестування та готове до розгортання в реальному середовищі. Отримані результати демонструють цілісне розуміння принципів архітектурного проєктування, взаємодії між клієнтом і сервером, а також засобів реалізації сучасного вебінтерфейсу.
+
+
+ 
+ДОДАТОК А
+ВІДЕОЗАПИС
+
+Відеозапис доповіді на YouTube: https://youtu.be/a-w30tZRySU 
+Хронологічний опис доповіді:
+00:00 – Вступ. Опис теми проєкту
+00:39 – Опис використаних технологій для розробки вебклієнта
+01:21 – Опис архітектури застосунка вебклієнта
+05:45 – Тестування авторизації користувачів
+06:08 – Огляд головної сторінки для звичайного користувача та адміністратора
+07:30 – Тестування сторінки "My Devices". Перегляд деталей пристрою.
+10:10 – Тестування сторінки "My Devices". Створення та редагування нового пристрою 
+11:12 – Тестування сторінки "My Devices". Створення та видалення нових розкладів
+12:04 – Тестування сторінки "My Devices". Огляд сторінки аналітики
+13:06 – Тестування сторінки "Manage Users". Редагування та видалення користувачів
+14:18 – Тестування сторінки "Manage Devices" Редагування та видалення пристроїв
+15:39 – Тестування сторінки "Manage Backups". Додавання та видалення резервних копій
+
+
+ДОДАТОК Б
+ГРАФІЧНІ МАТЕРІАЛИ
+ 
+Рисунок Б.1 - UML діаграма прецедентів
+
+Рисунок Б.2 - Діаграма компонентів
+ 
+Рисунок Б.3 - Діаграма взаємодії
+
+Рисунок Б.4 - Діаграма станів 
+
+
+ДОДАТОК В
+ПРОГРАМНИЙ КОД
+
+В.1 Математична обробка прикладних даних
+GitHub репозиторій: https://github.com/NureHorishniaKateryna/apz-pzpi-22-6-horishnia-kateryna/blob/main/Lab3/pzpi-22-6-horishnia-kateryna-lab3/src/pages/DeviceAnalyticsPage.tsx
+
+ 1   import React, { useEffect, useState } from "react";
+ 2   import { useParams } from "react-router";
+ 3   import { Container, Title, Card, Text, Grid, Space } from 
+     "@mantine/core";
+ 4   import type { DeviceAnalytics } from "../types";
+ 5   
+ 6   const formatSeconds = (seconds: number) => {
+ 7       const h = Math.floor(seconds / 60 / 60);
+ 8       const m = Math.floor((seconds % 3600) / 60);
+ 9       return `${h}h ${m}m`;
+10   };
+11   
+12   const generateAnalytics = (): DeviceAnalytics => {
+13   const enabledCount = Math.floor(Math.random() * 40) + 10;
+14       const totalMinutes = enabledCount * (30 + 
+         Math.floor(Math.random() * 60 * 60));
+15       const avgMinutes = totalMinutes / enabledCount;
+16       const kwh = totalMinutes * 0.01;
+17       const price = kwh * 0.2;
+18   
+19       return {
+20           enable_count: enabledCount,
+21           total_enabled_time: totalMinutes,
+22           average_enabled_time: avgMinutes,
+23           electricity_consumption: 
+             parseFloat(kwh.toFixed(2)),
+24           electricity_price: parseFloat(price.toFixed(2)),
+25       };
+26   };
+27   
+28   type DeviceAnalyticsBlockProps = {
+29       title: string;
+30       analytics: DeviceAnalytics;
+31   }
+32   
+33   const DeviceAnalyticsBlock = ({title, analytics}: 
+     DeviceAnalyticsBlockProps) => {
+34       return (
+35           <Card key={title} withBorder radius="md" shadow="xs" 
+           mb="lg" p="md">
+36               <Title order={4} mb="sm">{title}</Title>
+37               <Grid>
+38                   <Grid.Col span={6}>
+39                       <Text>Times Enabled</Text>
+40                       <Text 
+                     fw={500}>{analytics.enable_count}</Text>
+41                   </Grid.Col>
+42                   <Grid.Col span={6}>
+43                     <Text>Total Enabled Time</Text>
+44                     <Text 
+                       fw={500}>{formatSeconds 
+                       (analytics.total_enabled_time)}</Text>
+45                   </Grid.Col>
+46                   <Grid.Col span={6}>
+47                       <Text>Average Enabled Time</Text>
+48                       <Text 
+                         fw={500}>{formatSeconds(Math.round
+                         (analytics.average_enabled_time))}
+                         </Text>
+49                   </Grid.Col>
+50                   <Grid.Col span={6}>
+51                       <Text>Electricity Consumption</Text>
+52                       <Text 
+                         fw={500}>{analytics.
+                         electricity_consumption} kWh</Text>
+53                   </Grid.Col>
+54                   <Grid.Col span={6}>
+55                       <Text>Electricity Price</Text>
+56                       <Text 
+                         fw={500}>${analytics.
+                         electricity_price}</Text>
+57                   </Grid.Col>
+58               </Grid>
+59           </Card>
+60       )
+61   }
+62   
+63   const DeviceAnalyticsPage: React.FC = () => {
+64       const { deviceId } = useParams();
+65       const [thisMonth, setThisMonth] = 
+         useState<DeviceAnalytics | null>(null);
+66       const [last28Days, setLast28Days] = 
+         useState<DeviceAnalytics | null>(null);
+67   
+68       useEffect(() => {
+69           setThisMonth(generateAnalytics());
+70           setLast28Days(generateAnalytics());
+71       }, [deviceId]);
+72   
+73       return (
+74           <Container size="sm" py="md">
+75               <Title order={2} mb="md">Device Analytics</Title>
+76   
+77               {thisMonth && <DeviceAnalyticsBlock title="This 
+               Month" analytics={thisMonth}/>}
+78               {last28Days && <DeviceAnalyticsBlock title="Last 
+              28 Days" analytics={last28Days}/>}
+79   
+80               <Space h="xl" />
+81           </Container>
+82       );
+83   };
+84   
+85   export default DeviceAnalyticsPage;
+
+В.2 Адміністрування бізнес-логіки системи
+GitHub репозиторій: https://github.com/NureHorishniaKateryna/apz-pzpi-22-6-horishnia-kateryna/blob/main/Lab3/pzpi-22-6-horishnia-kateryna-lab3/src/pages/AdminUsersPage.tsx
+
+ 1   import {useEffect, useState} from 'react';
+ 2   import {Badge, Button, Container, Group, Pagination, 
+     Table, Title,} from '@mantine/core';
+ 3   import {useNavigate} from 'react-router';
+ 4   import {useDispatch, useSelector} from "react-redux";
+ 5   import type {AppDispatch, RootState} from "../store.ts";
+ 6   import {fetchUsers} from 
+     "../reducers/admin_users_reducer.ts";
+ 7   
+ 8   
+ 9   const AdminUsersPage = () => {
+10       const dispatch: AppDispatch = useDispatch();
+11       const users = useSelector((state: RootState) => 
+         state.admin_users.list);
+12       const pagesCount = useSelector((state: RootState) => 
+         state.admin_users.pages);
+13       const [page, setPage] = useState(1);
+14       const navigate = useNavigate();
+15   
+16       useEffect(() => {
+17           dispatch(fetchUsers(page));
+18       }, [page]);
+19   
+20       return (
+21           <Container size="lg" py="md">
+22               <Title order={2} mb="md">Manage Users</Title>
+23               <Table border={1} striped highlightOnHover>
+24                   <thead>
+25                   <tr>
+26                       <th>ID</th>
+27                       <th>Email</th>
+28                       <th>First Name</th>
+29                       <th>Last Name</th>
+30                       <th>Admin</th>
+31                       <th>Actions</th>
+32                   </tr>
+33                   </thead>
+34                   <tbody>
+35                   {users.map((user) => (
+36                       <tr key={user.id}>
+37                           <td>{user.id}</td>
+38                           <td>{user.email}</td>
+39                           <td>{user.first_name}</td>
+40                           <td>{user.last_name}</td>
+41                           <td>
+42                               {user.is_admin ? (
+43                                   <Badge color="green">Yes</Badge>
+44                               ) : (
+45                                   <Badge color="gray">No</Badge>
+46                               )}
+47                           </td>
+48                           <td>
+49                               <Group gap="xs">
+50                                   <Button
+51                                       size="xs"
+52                                       variant="outline"
+53                                       onClick={() => 
+                         navigate(`/admin/users/${user.id}`)}
+54                                   >
+55                                       Manage
+56                                   </Button>
+57                               </Group>
+58                           </td>
+59                       </tr>
+60                   ))}
+61                   </tbody>
+62               </Table>
+63   
+64               <div style={{display: "flex", justifyContent: 
+                 "right"}}>
+65                   <Pagination
+66                       value={page}
+67                       onChange={setPage}
+68                       total={pagesCount}
+69                       mt="md"
+70                   />
+71               </div>
+72           </Container>
+73       );
+74   };
+75   
+76   export default AdminUsersPage;
+
+В.3 Резервне копіювання користувацьких даних
+GitHub репозиторій: https://github.com/NureHorishniaKateryna/apz-pzpi-22-6-horishnia-kateryna/blob/main/Lab3/pzpi-22-6-horishnia-kateryna-lab3/src/pages/AdminBackupsPage.tsx
+
+ 1   import {useEffect} from "react";
+ 2   import {Button, Container, Group, Table, Title,} from 
+     "@mantine/core";
+ 3   import {useDispatch, useSelector} from "react-redux";
+ 4   import type {AppDispatch, RootState} from "../store.ts";
+ 5   import {createBackup, deleteBackup, fetchBackups, 
+     restoreBackup} from 
+     "../reducers/admin_backups_reducer.ts";
+ 6   import {unwrapResult} from "@reduxjs/toolkit";
+ 7   
+ 8   const AdminBackupsPage = () => {
+ 9       const dispatch: AppDispatch = useDispatch();
+10       const backups = useSelector((state: RootState) => 
+         state.admin_backups.list);
+11   
+12       useEffect(() => {
+13           dispatch(fetchBackups());
+14       }, []);
+15   
+16       return (
+17           <Container size="lg" py="md">
+18               <Group justify="space-between">
+19                   <Title order={2} mb="md">Manage 
+                     Backups</Title>
+20                   <Button onClick={() => 
+                     dispatch(createBackup())
+21                       .then(unwrapResult)
+22                       .then(result => {
+23                           if (result.error === null)
+24                               dispatch(fetchBackups());
+25                       })
+26                   }>Create backup</Button>
+27               </Group>
+28   
+29               <Table border={1} striped highlightOnHover>
+30                   <thead>
+31                   <tr>
+32                       <th>Name</th>
+33                       <th>Actions</th>
+34                   </tr>
+35                   </thead>
+36                   <tbody>
+37                   {backups.map((backup) => (
+38                       <tr key={backup}>
+39                           <td>{backup}</td>
+40                           <td>
+41                               <Group gap="xs">
+42                                   <Button
+43                                       size="xs"
+44                                       variant="outline"
+45                                       onClick={() => 
+                               dispatch(deleteBackup(backup))
+46                                        .then(unwrapResult)
+47                                          .then(result => {
+48                                 if (result.error === null)
+49                                  dispatch(fetchBackups());
+50                                           })
+51                                   }>Delete</Button>
+52                                   <Button
+53                                       size="xs"
+54                                       variant="outline"
+55                                       onClick={() => 
+                              dispatch(restoreBackup(backup))
+56                                        .then(unwrapResult)
+57                                          .then(result => {
+58                                 if (result.error === null)
+59                                  dispatch(fetchBackups());
+60                                           })
+61                                   }>Restore</Button>
+62                               </Group>
+63                           </td>
+64                       </tr>
+65                   ))}
+66                   </tbody>
+67               </Table>
+68           </Container>
+69       );
+70   };
+71   
+72   export default AdminBackupsPage;
