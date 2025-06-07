@@ -109,9 +109,8 @@ const DeviceDetailPage = () => {
 
     };
 
-    const handleGoToSchedule = () => {
-        navigate(`/devices/${deviceId}/schedule`);
-    };
+    const handleGoToSchedule = () => navigate(`/devices/${deviceId}/schedule`);
+    const handleGoToAnalytics = () => navigate(`/devices/${deviceId}/analytics`);
 
     return (
         <Container size="sm" py="md">
@@ -163,7 +162,10 @@ const DeviceDetailPage = () => {
             <Space h="md" />
 
             <Group>
-                <Button onClick={handleSave}>Save Changes</Button>
+                <Button color="green" onClick={handleSave}>Save Changes</Button>
+                <Button color="blue" variant="outline" onClick={handleGoToAnalytics}>
+                    View analytics
+                </Button>
                 <Button color="gray" variant="outline" onClick={handleGoToSchedule}>
                     Go to Schedule
                 </Button>
@@ -184,7 +186,7 @@ const DeviceDetailPage = () => {
                     <Card key={report.time} shadow="xs" p="sm" radius="md" mb="sm" withBorder>
                         <Group justify="space-between">
                             <Text c={report.enabled ? "green" : "red"}>{report.enabled ? 'Turned On' : 'Turned Off'}</Text>
-                            <Text size="sm" c="dimmed">{new Date(report.time).toLocaleString()}</Text>
+                            <Text size="sm" c="dimmed">{new Date(report.time * 1000).toLocaleString()}</Text>
                         </Group>
                     </Card>
                 ))}
