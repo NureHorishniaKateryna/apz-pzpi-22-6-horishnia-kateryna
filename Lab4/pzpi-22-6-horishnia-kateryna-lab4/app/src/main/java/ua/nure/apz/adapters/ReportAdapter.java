@@ -8,12 +8,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 
 import ua.nure.apz.R;
 import ua.nure.apz.api.DeviceReport;
 
 public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportViewHolder> {
+    private static final DateFormat DATE_FMT = DateFormat.getDateTimeInstance();
 
     private final List<DeviceReport> reports;
 
@@ -39,7 +42,7 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
     public void onBindViewHolder(@NonNull ReportViewHolder holder, int position) {
         DeviceReport report = reports.get(position);
         holder.statusTextView.setText(report.isEnabled() ? "Turned On" : "Turned Off");
-        holder.timeTextView.setText(report.getTime()+"s");
+        holder.timeTextView.setText(DATE_FMT.format(new Date(report.getTime() * 1000)));
     }
 
     @Override

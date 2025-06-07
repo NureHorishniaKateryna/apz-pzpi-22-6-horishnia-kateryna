@@ -90,7 +90,6 @@ public class DeviceInfoActivity extends AppCompatActivity {
                 LinearLayoutManager lm = (LinearLayoutManager) rv.getLayoutManager();
                 if (!isLoading && lm != null && lm.findLastVisibleItemPosition() >= reportAdapter.getItemCount() - 5) {
                     if (reportAdapter.getItemCount() < totalReports) {
-                        page++;
                         loadReports();
                     }
                 }
@@ -214,6 +213,7 @@ public class DeviceInfoActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     totalReports = response.body().count;
                     reportAdapter.addReports(response.body().result);
+                    page++;
                 }
             }
 
